@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Mi Portafolio de Aplicaciones Desarrolladas mediante WebServices y Aplicaciones Moviles">
+    <meta name="author" content="Carlos Jaime Lopez Martinez">
+
+    <title>Portafolio - Carlos Jaime López Martínez</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="freelancer.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Matrix Theme CSS -->
+    <link href="matrix-theme.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top" class="index">
+<div id="skipnav"><a href="#maincontent"></a></div>
+
+    <!-- Navigation -->
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#page-top">root@portfolio:~$</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#portfolio">Portafolio</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#about">Acerca De</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#contact">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="container" id="maincontent" tabindex="-1">
+            <div class="row">
+                <div class="col-lg-12">
+                    <img class="img-responsive" src="jimmy.jpg" alt="">
+                    <div class="intro-text">
+                        <h1 class="name">Carlos Jaime López Martínez</h1>
+                        <hr class="star-light">
+                        <span class="skills">[ System Developer | Code Ninja | IoT Hacker ]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Portfolio Grid Section -->
+    <section id="portfolio">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Portafolio</h2>
+                    <hr class="star-primary">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 portfolio-item">
+                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="sitiociberllamadas.png" class="img-responsive" alt="Cabin">
+                    </a>
+                </div>
+                <div class="col-sm-4 portfolio-item">
+                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="sitiorelojchecker.png" class="img-responsive" alt="Slice of cake">
+                    </a>
+                </div>
+                <div class="col-sm-4 portfolio-item">
+                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="sitioagendazaleta.png" class="img-responsive" alt="Circus tent">
+                    </a>
+                </div>
+                <div class="col-sm-4 portfolio-item">
+                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="sitiomezquitalroutes.png" class="img-responsive" alt="Game controller">
+                    </a>
+                </div>
+                <div class="col-sm-4 portfolio-item">
+                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="sitiodracevedo.png" class="img-responsive" alt="Safe">
+                    </a>
+                </div>
+                <div class="col-sm-4 portfolio-item">
+                    <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
+                        <div class="caption">
+                            <div class="caption-content">
+                                <i class="fa fa-search-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="sitiodelegacionimss.png" class="img-responsive" alt="Submarine">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="success" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Acerca De</h2>
+                    <hr class="star-light">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-lg-offset-2">
+                    <p>$ whoami > Ingeniero en Sistemas Computacionales | Especialidad en Robótica | Desarrollador Freelance | Experto en Desarrollo Web y Aplicaciones Móviles Android Nativo</p>
+                </div>
+                <div class="col-lg-4">
+                    <p>$ cat skills.txt > Desarrollo de Aplicaciones Embebidas | Hardware + Software | Tecnologías IoT | Hacking & Security</p>
+                </div>
+                <!--<div class="col-lg-8 col-lg-offset-2 text-center">
+                    <a href="#" class="btn btn-lg btn-outline">
+                        <i class="fa fa-download"></i> Download Theme
+                    </a>
+                </div>-->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Contacto</h2>
+                    <hr class="star-primary">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
+                    <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
+                    <form name="sentMessage" id="contactForm" novalidate>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label for="name">Nombre</label>
+                                <input type="text" class="form-control" placeholder="Su Nombre" id="name" required data-validation-required-message="Por favor Ingrese su Nombre.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label for="email">Dirección de E-Mail</label>
+                                <input type="email" class="form-control" placeholder="Dirección de E-Mail" id="email" required data-validation-required-message="Por Favor Ingrese su E-Mail.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label for="phone">Numero de Telefono</label>
+                                <input type="tel" class="form-control" placeholder="Numero de Telefono" id="phone" required data-validation-required-message="Por Favor Ingrese su Numero de Telefono.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label for="message">Mensaje</label>
+                                <textarea rows="5" class="form-control" placeholder="Mensaje" id="message" required data-validation-required-message="Por Favor Redacte su Mensaje."></textarea>
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <br>
+                        <div id="success"></div>
+                        <div class="row">
+                            <div class="form-group col-xs-12">
+                                <button type="submit" class="btn btn-success btn-lg">CONTACTAR</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="footer-above">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col col-md-4">
+                        <h3>[ LOCATION ]</h3>
+                        <p>Tlahuelilpan
+                            <br>Hidalgo, Mexico</p>
+                    </div>
+                    <div class="footer-col col-md-4">
+                        <h3>[ SOCIAL NETWORKS ]</h3>
+                        <ul class="list-inline">
+                            <li>
+                                <a href="http://facebook.com/jimmy.lopez.mtz" class="btn-social btn-outline" target="_blank"><span class="sr-only">Facebook</span><i class="fa fa-fw fa-facebook"></i></a>
+                            </li>
+                            <li>
+                                <a href="https://plus.google.com/u/0/+carlosjaimelopezmartinez" class="btn-social btn-outline" target="_blank"><span class="sr-only">Google Plus</span><i class="fa fa-fw fa-google-plus"></i></a>
+                            </li>
+                            <li>
+                                <a href="http://twitter.com/jaimtito682004" class="btn-social btn-outline" target="_blank"><span class="sr-only">Twitter</span><i class="fa fa-fw fa-twitter"></i></a>
+                            </li>
+                            <li>
+                                <a href="http://linkedin.com/in/jimmy-lopez/" class="btn-social btn-outline" target="_blank"><span class="sr-only">Linked In</span><i class="fa fa-fw fa-linkedin"></i></a>
+                            </li>
+                            <!--<li>
+                                <a href="#" class="btn-social btn-outline"><span class="sr-only">Dribble</span><i class="fa fa-fw fa-dribbble"></i></a>
+                            </li>-->
+                        </ul>
+                    </div>
+                    <div class="footer-col col-md-4">
+                        <h3>[ ABOUT DEV ]</h3>
+                        <p>Este portafolio fue desarrollador por ISC.Carlos Jaime López Martínez.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        Copyright &copy; Carlos Jaime 2017
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+    <div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
+        <a class="btn btn-primary" href="#page-top">
+            <i class="fa fa-chevron-up"></i>
+        </a>
+    </div>
+
+    <!-- Portfolio Modals -->
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>Sitio Web Ciber Llamadas</h2>
+                            <hr class="star-primary">
+                            <img src="sitiociberllamadas.png" class="img-responsive img-centered" alt="">
+                            <p>
+                            Sitio Web de informacion y entretenimiento para los usuarios del Ciber Cafe y adminstradores del ciber cafe estadisticas relevantes. 
+                            </p>
+                            <ul class="list-inline item-details">
+                                <li>Cliente:
+                                    <strong><a href="#">Jaime Lopez Lopez</a>
+                                    </strong>
+                                </li>
+                                <li>Fecha:
+                                    <strong><a href="#">Febrero 2016</a>
+                                    </strong>
+                                </li>
+                                <li>Desarrollo:
+                                    <strong><a href="#">Sitio Web y Aplicacion Movil Android</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>Reloj Checker (Checker)</h2>
+                            <hr class="star-primary">
+                            <img src="sitiorelojchecker.png" class="img-responsive img-centered" alt="">
+                            <p>
+                            Sitio Web y Aplicación Movil para el control de checadas y salidas para los empleados de cualquier empresa u organizacion. 
+                            </p>
+                            <ul class="list-inline item-details">
+                                <li>Cliente:
+                                    <strong><a href="#">Dirigido a Empresas u Organizaciones</a>
+                                    </strong>
+                                </li>
+                                <li>Fecha:
+                                    <strong><a href="#">Mayo 2017</a>
+                                    </strong>
+                                </li>
+                                <li>Desarrollo:
+                                    <strong><a href="#">Desarrollo Web y Aplicación Movil Android</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>Agenda Zaleta</h2>
+                            <hr class="star-primary">
+                            <img src="sitioagendazaleta.png" class="img-responsive img-centered" alt="">
+                            
+                            <p>
+                            Desarrollo de una Agenda para el Secretario del Sindicato Nacional de Trabajadores del Seguro Social (SNTSS) para atender al personal de las distintas clinicas del estado de Hidalgo por medio de Internet sitio web y aplicacion movil para Android.
+                            </p>
+                            
+                            <ul class="list-inline item-details">
+                                <li>Cliente:
+                                    <strong><a href="#">Dr.Jaime Velazquez Zaleta</a>
+                                    </strong>
+                                </li>
+                                <li>Fecha:
+                                    <strong><a href="#">Julio 2017</a>
+                                    </strong>
+                                </li>
+                                <li>Desarrollo:
+                                    <strong><a href="#">Desarrollo Web y Aplicación Movil Android</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>Mezquital Routes</h2>
+                            <hr class="star-primary">
+                            <img src="sitiomezquitalroutes.png" class="img-responsive img-centered" alt="">
+                               <p>
+                                Desarrollo de una Aplicación Movil para Android y Sitio Web, el cual brinda información sobre Costos, Horarios, Oficinas, y Lugares Turisticos, entre otras funciones mas a los usuarios del transporte publico del Valle de Mezquital, realizando traslados mas eficientes y seguros.    
+                            </p>
+                            <ul class="list-inline item-details">
+                                <li>Cliente:
+                                    <strong><a href="#">Usuarios del Transporte Publico</a>
+                                    </strong>
+                                </li>
+                                <li>Fecha:
+                                    <strong><a href="#">Mayo 2016</a>
+                                    </strong>
+                                </li>
+                                <li>Desarrollo:
+                                    <strong><a href="#">Desarrollo Web y Aplicación Movil Android</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>Bitacora de Pacientes</h2>
+                            <hr class="star-primary">
+                            <img src="sitiodracevedo.png" class="img-responsive img-centered" alt="">
+                            <p>
+                                Desarrollo de una bitacora de citas para llevar a cabo la candalerizacion de sus pacientes a lo largo de la jornada, reservando su lugar anticipadamente por el paciente o asistente local. 
+                            </p>                              
+                            <ul class="list-inline item-details">
+                                <li>Cliente:
+                                    <strong><a href="#">Dr.Daniel Acevedo</a>
+                                    </strong>
+                                </li>
+                                <li>Fecha:
+                                    <strong><a href="#">Noviembre 2016</a>
+                                    </strong>
+                                </li>
+                                <li>Desarrollo:
+                                    <strong><a href="#">Desarrollo Web</a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>Sistema de Incidencias Delegacion IMSS Hidalgo</h2>
+                            <hr class="star-primary">
+                            <img src="sitiodelegacionimss.png" class="img-responsive img-centered" alt="">
+                            <p>
+                                Sistema de Incidencias Nivel Delegacional del Instituto Mexicano del Seguro Social, para reportar fallos en Area de Informatica. 
+                            </p>
+                            <ul class="list-inline item-details">
+                                <li>Cliente:
+                                    <strong><a href="#">Delegacion IMSS Hidalgo</a>
+                                    </strong>
+                                </li>
+                                <li>Fecha:
+                                    <strong><a href="#">Marzo 2016</a>
+                                    </strong>
+                                </li>
+                                <li>Desarrollo:
+                                    <strong><a href="#">Desarrollo Web </a>
+                                    </strong>
+                                </li>
+                            </ul>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- jQuery -->
+    <script src="jquery.min.js"></script>
+        
+        </script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="jquery.easing.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="jqBootstrapValidation.js"></script>
+    <script src="contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="freelancer.min.js"></script>
+
+    <!-- Matrix Rain Animation -->
+    <script src="matrix-rain.js"></script>
+
+</body>
+
+</html>
