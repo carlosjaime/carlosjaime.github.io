@@ -1,0 +1,285 @@
+/* Matrix/Hacking Theme Styles */
+
+/* Canvas for Matrix rain effect */
+#matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: #000000;
+}
+
+/* Override body and main colors */
+body {
+    background-color: #000000 !important;
+    color: #00ff00 !important;
+    font-family: 'Courier New', 'Consolas', monospace !important;
+}
+
+/* Scanline effect */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 0, 0.03) 0px,
+        rgba(0, 255, 0, 0.03) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Navbar styling */
+.navbar-custom {
+    background: rgba(0, 20, 0, 0.95) !important;
+    border-bottom: 2px solid #00ff00 !important;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5) !important;
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-nav li a {
+    color: #00ff00 !important;
+    text-shadow: 0 0 10px #00ff00;
+    font-family: 'Courier New', monospace !important;
+}
+
+.navbar-custom .navbar-nav li a:hover,
+.navbar-custom .navbar-brand:hover {
+    color: #00ff00 !important;
+    text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00;
+    background: rgba(0, 255, 0, 0.1) !important;
+}
+
+.navbar-custom .navbar-nav li.active a {
+    background: rgba(0, 255, 0, 0.2) !important;
+    color: #00ff00 !important;
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Header styling */
+header {
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #00ff00 !important;
+    border-bottom: 3px solid #00ff00;
+    box-shadow: 0 5px 30px rgba(0, 255, 0, 0.3);
+}
+
+header .intro-text .name {
+    color: #00ff00 !important;
+    text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+header .intro-text .skills {
+    color: #00cc00 !important;
+    text-shadow: 0 0 10px #00cc00;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+    }
+    to {
+        text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00, 0 0 40px #00ff00, 0 0 50px #00ff00;
+    }
+}
+
+/* Star divider override */
+hr.star-light,
+hr.star-primary {
+    border-color: #00ff00 !important;
+}
+
+hr.star-light:after,
+hr.star-primary:after {
+    background-color: #000000 !important;
+    color: #00ff00 !important;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+/* Section styling */
+section {
+    background: rgba(0, 0, 0, 0.85) !important;
+    color: #00ff00 !important;
+}
+
+section h2 {
+    color: #00ff00 !important;
+    text-shadow: 0 0 15px #00ff00;
+    font-family: 'Courier New', monospace !important;
+}
+
+section.success {
+    background: rgba(0, 15, 0, 0.9) !important;
+    border-top: 2px solid #00ff00;
+    border-bottom: 2px solid #00ff00;
+}
+
+/* Portfolio items */
+#portfolio .portfolio-item .portfolio-link .caption {
+    background: rgba(0, 255, 0, 0.95) !important;
+}
+
+#portfolio .portfolio-item img {
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+#portfolio .portfolio-item img:hover {
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
+    border-color: #00ff00;
+}
+
+/* Form styling */
+.floating-label-form-group {
+    border-bottom: 1px solid #00ff00 !important;
+}
+
+.floating-label-form-group input,
+.floating-label-form-group textarea {
+    color: #00ff00 !important;
+    background: rgba(0, 20, 0, 0.3) !important;
+    border: 1px solid #00ff00 !important;
+}
+
+.floating-label-form-group label {
+    color: #00cc00 !important;
+}
+
+.floating-label-form-group-with-focus label {
+    color: #00ff00 !important;
+}
+
+/* Button styling */
+.btn-outline,
+.btn-primary,
+.btn-success {
+    color: #00ff00 !important;
+    background: transparent !important;
+    border: 2px solid #00ff00 !important;
+    text-shadow: 0 0 5px #00ff00;
+    font-family: 'Courier New', monospace !important;
+}
+
+.btn-outline:hover,
+.btn-primary:hover,
+.btn-success:hover {
+    color: #000000 !important;
+    background: #00ff00 !important;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    text-shadow: none;
+}
+
+/* Footer styling */
+footer {
+    background-color: #000000 !important;
+    color: #00ff00 !important;
+    border-top: 3px solid #00ff00;
+}
+
+footer .footer-above {
+    background-color: rgba(0, 20, 0, 0.9) !important;
+}
+
+footer .footer-below {
+    background-color: rgba(0, 10, 0, 0.95) !important;
+}
+
+footer h3 {
+    color: #00ff00 !important;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+footer a {
+    color: #00ff00 !important;
+}
+
+footer a:hover {
+    color: #00ff00 !important;
+    text-shadow: 0 0 15px #00ff00;
+}
+
+.btn-social {
+    border-color: #00ff00 !important;
+    color: #00ff00 !important;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+.btn-social:hover {
+    background: rgba(0, 255, 0, 0.2) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+/* Modal styling */
+.portfolio-modal .modal-content {
+    background: rgba(0, 0, 0, 0.95) !important;
+    color: #00ff00 !important;
+    border: 2px solid #00ff00;
+}
+
+.portfolio-modal .modal-content h2 {
+    color: #00ff00 !important;
+    text-shadow: 0 0 15px #00ff00;
+}
+
+.portfolio-modal .modal-content p,
+.portfolio-modal .modal-content li {
+    color: #00cc00 !important;
+}
+
+.portfolio-modal .close-modal .lr,
+.portfolio-modal .close-modal .lr .rl {
+    background-color: #00ff00 !important;
+    box-shadow: 0 0 10px #00ff00;
+}
+
+/* Paragraph and text */
+p {
+    color: #00cc00 !important;
+}
+
+a {
+    color: #00ff00 !important;
+}
+
+a:hover {
+    color: #00ff00 !important;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+/* List items */
+ul.list-inline li {
+    color: #00cc00 !important;
+}
+
+ul.list-inline li strong a {
+    color: #00ff00 !important;
+}
+
+/* Image profile border */
+header img {
+    border: 3px solid #00ff00;
+    border-radius: 50%;
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+}
+
+/* Terminal cursor effect */
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.terminal-cursor::after {
+    content: '▮';
+    animation: blink 1s infinite;
+    color: #00ff00;
+}
