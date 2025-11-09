@@ -11,19 +11,11 @@
 
     <title>Portafolio - Carlos Jaime López Martínez</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="bootstrap.min.css" rel="stylesheet">
-
-    <!-- Theme CSS -->
-    <link href="freelancer.min.css" rel="stylesheet">
+    <!-- Custom Tailwind-like CSS -->
+    <link href="tailwind-custom.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-
-    <!-- Matrix Theme CSS -->
-    <link href="matrix-theme.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -38,516 +30,551 @@
 <div id="skipnav"><a href="#maincontent"></a></div>
 
     <!-- Navigation -->
-    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
-                </button>
-                <a class="navbar-brand" href="#page-top">root@portfolio:~$</a>
-            </div>
+    <nav id="mainNav" class="fixed top-0 w-full z-50 bg-[rgba(0,20,0,0.95)] border-b-2 border-matrix-green shadow-[0_0_20px_rgba(0,255,0,0.5)]">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Brand -->
+                <a href="#page-top" class="text-matrix-green text-xl font-mono hover:shadow-[0_0_20px_#00ff00,0_0_30px_#00ff00] transition-all duration-300" style="text-shadow: 0 0 10px #00ff00;">
+                    root@portfolio:~$
+                </a>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="hidden">
-                        <a href="#page-top"></a>
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden text-matrix-green hover:bg-[rgba(0,255,0,0.1)] p-2 rounded">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+
+                <!-- Desktop Navigation -->
+                <ul class="hidden md:flex space-x-6">
+                    <li>
+                        <a href="#portfolio" class="text-matrix-green font-mono hover:bg-[rgba(0,255,0,0.1)] px-4 py-2 rounded transition-all duration-300" style="text-shadow: 0 0 10px #00ff00;">
+                            Portafolio
+                        </a>
                     </li>
-                    <li class="page-scroll">
-                        <a href="#portfolio">Portafolio</a>
+                    <li>
+                        <a href="#about" class="text-matrix-green font-mono hover:bg-[rgba(0,255,0,0.1)] px-4 py-2 rounded transition-all duration-300" style="text-shadow: 0 0 10px #00ff00;">
+                            Acerca De
+                        </a>
                     </li>
-                    <li class="page-scroll">
-                        <a href="#about">Acerca De</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#contact">Contacto</a>
+                    <li>
+                        <a href="#contact" class="text-matrix-green font-mono hover:bg-[rgba(0,255,0,0.1)] px-4 py-2 rounded transition-all duration-300" style="text-shadow: 0 0 10px #00ff00;">
+                            Contacto
+                        </a>
                     </li>
                 </ul>
             </div>
-            <!-- /.navbar-collapse -->
+
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <ul class="flex flex-col space-y-2">
+                    <li>
+                        <a href="#portfolio" class="block text-matrix-green font-mono hover:bg-[rgba(0,255,0,0.1)] px-4 py-2 rounded transition-all duration-300" style="text-shadow: 0 0 10px #00ff00;">
+                            Portafolio
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#about" class="block text-matrix-green font-mono hover:bg-[rgba(0,255,0,0.1)] px-4 py-2 rounded transition-all duration-300" style="text-shadow: 0 0 10px #00ff00;">
+                            Acerca De
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#contact" class="block text-matrix-green font-mono hover:bg-[rgba(0,255,0,0.1)] px-4 py-2 rounded transition-all duration-300" style="text-shadow: 0 0 10px #00ff00;">
+                            Contacto
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <!-- /.container-fluid -->
     </nav>
 
     <!-- Header -->
-    <header>
-        <div class="container" id="maincontent" tabindex="-1">
-            <div class="row">
-                <div class="col-lg-12">
-                    <img class="img-responsive" src="jimmy.jpg" alt="">
-                    <div class="intro-text">
-                        <h1 class="name">Carlos Jaime López Martínez</h1>
-                        <hr class="star-light">
-                        <span class="skills">[ System Developer | Code Ninja | IoT Hacker ]</span>
-                    </div>
+    <header class="bg-[rgba(0,0,0,0.8)] border-b-2 border-matrix-green shadow-[0_5px_30px_rgba(0,255,0,0.3)] pt-32 pb-20">
+        <div class="container mx-auto px-4" id="maincontent" tabindex="-1">
+            <div class="flex flex-col items-center">
+                <img class="w-64 h-64 object-cover rounded-full border-4 border-matrix-green shadow-[0_0_25px_rgba(0,255,0,0.5)]" src="jimmy.jpg" alt="Carlos Jaime">
+                <div class="text-center mt-8">
+                    <h1 class="text-4xl md:text-6xl font-montserrat font-bold uppercase glow-text" style="text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00;">Carlos Jaime López Martínez</h1>
+                    <hr class="star-divider">
+                    <span class="text-xl md:text-2xl text-matrix-darkgreen" style="text-shadow: 0 0 10px #00cc00;">[ System Developer | Code Ninja | IoT Hacker ]</span>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Portfolio Grid Section -->
-    <section id="portfolio">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Portafolio</h2>
-                    <hr class="star-primary">
-                </div>
+    <section id="portfolio" class="bg-[rgba(0,0,0,0.85)] py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-montserrat font-bold uppercase text-matrix-green" style="text-shadow: 0 0 15px #00ff00;">Portafolio</h2>
+                <hr class="star-divider">
             </div>
-            <div class="row">
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="portfolio-item group relative overflow-hidden cursor-pointer" onclick="openModal('portfolioModal1')">
+                    <div class="relative">
+                        <img src="sitiociberllamadas.png" class="w-full h-auto border-2 border-matrix-green shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(0,255,0,0.7)]" alt="Cabin">
+                        <div class="absolute inset-0 bg-[rgba(0,255,0,0.95)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="fa fa-search-plus fa-3x text-black"></i>
                         </div>
-                        <img src="sitiociberllamadas.png" class="img-responsive" alt="Cabin">
-                    </a>
+                    </div>
                 </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
+                <div class="portfolio-item group relative overflow-hidden cursor-pointer" onclick="openModal('portfolioModal2')">
+                    <div class="relative">
+                        <img src="sitiorelojchecker.png" class="w-full h-auto border-2 border-matrix-green shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(0,255,0,0.7)]" alt="Slice of cake">
+                        <div class="absolute inset-0 bg-[rgba(0,255,0,0.95)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="fa fa-search-plus fa-3x text-black"></i>
                         </div>
-                        <img src="sitiorelojchecker.png" class="img-responsive" alt="Slice of cake">
-                    </a>
+                    </div>
                 </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
+                <div class="portfolio-item group relative overflow-hidden cursor-pointer" onclick="openModal('portfolioModal3')">
+                    <div class="relative">
+                        <img src="sitioagendazaleta.png" class="w-full h-auto border-2 border-matrix-green shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(0,255,0,0.7)]" alt="Circus tent">
+                        <div class="absolute inset-0 bg-[rgba(0,255,0,0.95)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="fa fa-search-plus fa-3x text-black"></i>
                         </div>
-                        <img src="sitioagendazaleta.png" class="img-responsive" alt="Circus tent">
-                    </a>
+                    </div>
                 </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
+                <div class="portfolio-item group relative overflow-hidden cursor-pointer" onclick="openModal('portfolioModal4')">
+                    <div class="relative">
+                        <img src="sitiomezquitalroutes.png" class="w-full h-auto border-2 border-matrix-green shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(0,255,0,0.7)]" alt="Game controller">
+                        <div class="absolute inset-0 bg-[rgba(0,255,0,0.95)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="fa fa-search-plus fa-3x text-black"></i>
                         </div>
-                        <img src="sitiomezquitalroutes.png" class="img-responsive" alt="Game controller">
-                    </a>
+                    </div>
                 </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
+                <div class="portfolio-item group relative overflow-hidden cursor-pointer" onclick="openModal('portfolioModal5')">
+                    <div class="relative">
+                        <img src="sitiodracevedo.png" class="w-full h-auto border-2 border-matrix-green shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(0,255,0,0.7)]" alt="Safe">
+                        <div class="absolute inset-0 bg-[rgba(0,255,0,0.95)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="fa fa-search-plus fa-3x text-black"></i>
                         </div>
-                        <img src="sitiodracevedo.png" class="img-responsive" alt="Safe">
-                    </a>
+                    </div>
                 </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
+                <div class="portfolio-item group relative overflow-hidden cursor-pointer" onclick="openModal('portfolioModal6')">
+                    <div class="relative">
+                        <img src="sitiodelegacionimss.png" class="w-full h-auto border-2 border-matrix-green shadow-[0_0_15px_rgba(0,255,0,0.3)] transition-all duration-300 group-hover:shadow-[0_0_30px_rgba(0,255,0,0.7)]" alt="Submarine">
+                        <div class="absolute inset-0 bg-[rgba(0,255,0,0.95)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="fa fa-search-plus fa-3x text-black"></i>
                         </div>
-                        <img src="sitiodelegacionimss.png" class="img-responsive" alt="Submarine">
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section class="success" id="about">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Acerca De</h2>
-                    <hr class="star-light">
-                </div>
+    <section id="about" class="bg-[rgba(0,15,0,0.9)] border-t-2 border-b-2 border-matrix-green py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-montserrat font-bold uppercase text-matrix-green" style="text-shadow: 0 0 15px #00ff00;">Acerca De</h2>
+                <hr class="star-divider">
             </div>
-            <div class="row">
-                <div class="col-lg-4 col-lg-offset-2">
-                    <p>$ whoami > Ingeniero en Sistemas Computacionales | Especialidad en Robótica | Desarrollador Freelance | Experto en Desarrollo Web y Aplicaciones Móviles Android Nativo</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <div>
+                    <p class="text-xl text-matrix-darkgreen">$ whoami > Ingeniero en Sistemas Computacionales | Especialidad en Robótica | Desarrollador Freelance | Experto en Desarrollo Web y Aplicaciones Móviles Android Nativo</p>
                 </div>
-                <div class="col-lg-4">
-                    <p>$ cat skills.txt > Desarrollo de Aplicaciones Embebidas | Hardware + Software | Tecnologías IoT | Hacking & Security</p>
+                <div>
+                    <p class="text-xl text-matrix-darkgreen">$ cat skills.txt > Desarrollo de Aplicaciones Embebidas | Hardware + Software | Tecnologías IoT | Hacking & Security</p>
                 </div>
-                <!--<div class="col-lg-8 col-lg-offset-2 text-center">
-                    <a href="#" class="btn btn-lg btn-outline">
-                        <i class="fa fa-download"></i> Download Theme
-                    </a>
-                </div>-->
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Contacto</h2>
-                    <hr class="star-primary">
-                </div>
+    <section id="contact" class="bg-[rgba(0,0,0,0.85)] py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-montserrat font-bold uppercase text-matrix-green" style="text-shadow: 0 0 15px #00ff00;">Contacto</h2>
+                <hr class="star-divider">
             </div>
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
-                    <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
-                    <form name="sentMessage" id="contactForm" novalidate>
-                        <div class="row control-group">
-                            <div class="form-group col-xs-12 floating-label-form-group controls">
-                                <label for="name">Nombre</label>
-                                <input type="text" class="form-control" placeholder="Su Nombre" id="name" required data-validation-required-message="Por favor Ingrese su Nombre.">
-                                <p class="help-block text-danger"></p>
-                            </div>
+            <div class="max-w-3xl mx-auto">
+                <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
+                <!-- The form should work on most web servers, but if the form is not working you may need to configure your web server differently. -->
+                <form name="sentMessage" id="contactForm" novalidate>
+                    <div class="mb-6">
+                        <div class="relative">
+                            <label for="name" class="block text-matrix-darkgreen mb-2">Nombre</label>
+                            <input type="text" class="w-full bg-[rgba(0,20,0,0.3)] border border-matrix-green text-matrix-green px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-matrix-green" placeholder="Su Nombre" id="name" required>
+                            <p class="help-block text-red-500 mt-2 hidden"></p>
                         </div>
-                        <div class="row control-group">
-                            <div class="form-group col-xs-12 floating-label-form-group controls">
-                                <label for="email">Dirección de E-Mail</label>
-                                <input type="email" class="form-control" placeholder="Dirección de E-Mail" id="email" required data-validation-required-message="Por Favor Ingrese su E-Mail.">
-                                <p class="help-block text-danger"></p>
-                            </div>
+                    </div>
+                    <div class="mb-6">
+                        <div class="relative">
+                            <label for="email" class="block text-matrix-darkgreen mb-2">Dirección de E-Mail</label>
+                            <input type="email" class="w-full bg-[rgba(0,20,0,0.3)] border border-matrix-green text-matrix-green px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-matrix-green" placeholder="Dirección de E-Mail" id="email" required>
+                            <p class="help-block text-red-500 mt-2 hidden"></p>
                         </div>
-                        <div class="row control-group">
-                            <div class="form-group col-xs-12 floating-label-form-group controls">
-                                <label for="phone">Numero de Telefono</label>
-                                <input type="tel" class="form-control" placeholder="Numero de Telefono" id="phone" required data-validation-required-message="Por Favor Ingrese su Numero de Telefono.">
-                                <p class="help-block text-danger"></p>
-                            </div>
+                    </div>
+                    <div class="mb-6">
+                        <div class="relative">
+                            <label for="phone" class="block text-matrix-darkgreen mb-2">Numero de Telefono</label>
+                            <input type="tel" class="w-full bg-[rgba(0,20,0,0.3)] border border-matrix-green text-matrix-green px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-matrix-green" placeholder="Numero de Telefono" id="phone" required>
+                            <p class="help-block text-red-500 mt-2 hidden"></p>
                         </div>
-                        <div class="row control-group">
-                            <div class="form-group col-xs-12 floating-label-form-group controls">
-                                <label for="message">Mensaje</label>
-                                <textarea rows="5" class="form-control" placeholder="Mensaje" id="message" required data-validation-required-message="Por Favor Redacte su Mensaje."></textarea>
-                                <p class="help-block text-danger"></p>
-                            </div>
+                    </div>
+                    <div class="mb-6">
+                        <div class="relative">
+                            <label for="message" class="block text-matrix-darkgreen mb-2">Mensaje</label>
+                            <textarea rows="5" class="w-full bg-[rgba(0,20,0,0.3)] border border-matrix-green text-matrix-green px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-matrix-green" placeholder="Mensaje" id="message" required></textarea>
+                            <p class="help-block text-red-500 mt-2 hidden"></p>
                         </div>
-                        <br>
-                        <div id="success"></div>
-                        <div class="row">
-                            <div class="form-group col-xs-12">
-                                <button type="submit" class="btn btn-success btn-lg">CONTACTAR</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div id="success"></div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-transparent border-2 border-matrix-green text-matrix-green font-mono px-8 py-3 rounded hover:bg-matrix-green hover:text-black transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,255,0,0.8)] text-lg" style="text-shadow: 0 0 5px #00ff00;">
+                            CONTACTAR
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="text-center">
-        <div class="footer-above">
-            <div class="container">
-                <div class="row">
-                    <div class="footer-col col-md-4">
-                        <h3>[ LOCATION ]</h3>
-                        <p>Tlahuelilpan
-                            <br>Hidalgo, Mexico</p>
+    <footer class="bg-black text-matrix-green border-t-2 border-matrix-green">
+        <div class="bg-[rgba(0,20,0,0.9)] py-12">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4" style="text-shadow: 0 0 10px #00ff00;">[ LOCATION ]</h3>
+                        <p class="text-matrix-darkgreen">Tlahuelilpan<br>Hidalgo, Mexico</p>
                     </div>
-                    <div class="footer-col col-md-4">
-                        <h3>[ SOCIAL NETWORKS ]</h3>
-                        <ul class="list-inline">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4" style="text-shadow: 0 0 10px #00ff00;">[ SOCIAL NETWORKS ]</h3>
+                        <ul class="flex justify-center space-x-4">
                             <li>
-                                <a href="http://facebook.com/jimmy.lopez.mtz" class="btn-social btn-outline" target="_blank"><span class="sr-only">Facebook</span><i class="fa fa-fw fa-facebook"></i></a>
+                                <a href="http://facebook.com/jimmy.lopez.mtz" class="inline-flex items-center justify-center w-12 h-12 border-2 border-matrix-green rounded-full text-matrix-green hover:bg-[rgba(0,255,0,0.2)] hover:shadow-[0_0_15px_rgba(0,255,0,0.5)] transition-all duration-300" target="_blank" style="text-shadow: 0 0 5px #00ff00;">
+                                    <span class="sr-only">Facebook</span><i class="fa fa-fw fa-facebook"></i>
+                                </a>
                             </li>
                             <li>
-                                <a href="https://plus.google.com/u/0/+carlosjaimelopezmartinez" class="btn-social btn-outline" target="_blank"><span class="sr-only">Google Plus</span><i class="fa fa-fw fa-google-plus"></i></a>
+                                <a href="https://plus.google.com/u/0/+carlosjaimelopezmartinez" class="inline-flex items-center justify-center w-12 h-12 border-2 border-matrix-green rounded-full text-matrix-green hover:bg-[rgba(0,255,0,0.2)] hover:shadow-[0_0_15px_rgba(0,255,0,0.5)] transition-all duration-300" target="_blank" style="text-shadow: 0 0 5px #00ff00;">
+                                    <span class="sr-only">Google Plus</span><i class="fa fa-fw fa-google-plus"></i>
+                                </a>
                             </li>
                             <li>
-                                <a href="http://twitter.com/jaimtito682004" class="btn-social btn-outline" target="_blank"><span class="sr-only">Twitter</span><i class="fa fa-fw fa-twitter"></i></a>
+                                <a href="http://twitter.com/jaimtito682004" class="inline-flex items-center justify-center w-12 h-12 border-2 border-matrix-green rounded-full text-matrix-green hover:bg-[rgba(0,255,0,0.2)] hover:shadow-[0_0_15px_rgba(0,255,0,0.5)] transition-all duration-300" target="_blank" style="text-shadow: 0 0 5px #00ff00;">
+                                    <span class="sr-only">Twitter</span><i class="fa fa-fw fa-twitter"></i>
+                                </a>
                             </li>
                             <li>
-                                <a href="http://linkedin.com/in/jimmy-lopez/" class="btn-social btn-outline" target="_blank"><span class="sr-only">Linked In</span><i class="fa fa-fw fa-linkedin"></i></a>
+                                <a href="http://linkedin.com/in/jimmy-lopez/" class="inline-flex items-center justify-center w-12 h-12 border-2 border-matrix-green rounded-full text-matrix-green hover:bg-[rgba(0,255,0,0.2)] hover:shadow-[0_0_15px_rgba(0,255,0,0.5)] transition-all duration-300" target="_blank" style="text-shadow: 0 0 5px #00ff00;">
+                                    <span class="sr-only">Linked In</span><i class="fa fa-fw fa-linkedin"></i>
+                                </a>
                             </li>
-                            <!--<li>
-                                <a href="#" class="btn-social btn-outline"><span class="sr-only">Dribble</span><i class="fa fa-fw fa-dribbble"></i></a>
-                            </li>-->
                         </ul>
                     </div>
-                    <div class="footer-col col-md-4">
-                        <h3>[ ABOUT DEV ]</h3>
-                        <p>Este portafolio fue desarrollador por ISC.Carlos Jaime López Martínez.</p>
+                    <div>
+                        <h3 class="text-xl font-bold mb-4" style="text-shadow: 0 0 10px #00ff00;">[ ABOUT DEV ]</h3>
+                        <p class="text-matrix-darkgreen">Este portafolio fue desarrollador por ISC.Carlos Jaime López Martínez.</p>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="footer-below">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        Copyright &copy; Carlos Jaime 2017
-                    </div>
+        <div class="bg-[rgba(0,10,0,0.95)] py-6">
+            <div class="container mx-auto px-4">
+                <div class="text-center text-matrix-darkgreen">
+                    Copyright &copy; Carlos Jaime 2017
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-    <div class="scroll-top page-scroll hidden-sm hidden-xs hidden-lg hidden-md">
-        <a class="btn btn-primary" href="#page-top">
+    <div class="fixed bottom-8 right-8 z-50 hidden" id="scroll-top">
+        <a href="#page-top" class="inline-flex items-center justify-center w-12 h-12 bg-transparent border-2 border-matrix-green text-matrix-green rounded hover:bg-matrix-green hover:text-black transition-all duration-300">
             <i class="fa fa-chevron-up"></i>
         </a>
     </div>
 
     <!-- Portfolio Modals -->
-    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
+    <div id="portfolioModal1" class="modal-backdrop hidden">
+        <div class="modal-content flex items-center justify-center p-4">
+            <div class="relative bg-[rgba(0,0,0,0.95)] border-2 border-matrix-green max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
+                <div class="absolute top-4 right-4 cursor-pointer z-10" onclick="closeModal('portfolioModal1')">
+                    <div class="w-12 h-12 flex items-center justify-center">
+                        <div class="w-8 h-0.5 bg-matrix-green transform rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
+                        <div class="w-8 h-0.5 bg-matrix-green transform -rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
                     </div>
                 </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Sitio Web Ciber Llamadas</h2>
-                            <hr class="star-primary">
-                            <img src="sitiociberllamadas.png" class="img-responsive img-centered" alt="">
-                            <p>
-                            Sitio Web de informacion y entretenimiento para los usuarios del Ciber Cafe y adminstradores del ciber cafe estadisticas relevantes. 
-                            </p>
-                            <ul class="list-inline item-details">
-                                <li>Cliente:
-                                    <strong><a href="#">Jaime Lopez Lopez</a>
-                                    </strong>
-                                </li>
-                                <li>Fecha:
-                                    <strong><a href="#">Febrero 2016</a>
-                                    </strong>
-                                </li>
-                                <li>Desarrollo:
-                                    <strong><a href="#">Sitio Web y Aplicacion Movil Android</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-                        </div>
-                    </div>
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl md:text-4xl font-bold uppercase text-matrix-green mb-6" style="text-shadow: 0 0 15px #00ff00;">Sitio Web Ciber Llamadas</h2>
+                    <hr class="star-divider">
+                    <img src="sitiociberllamadas.png" class="w-full h-auto mx-auto mb-6 border-2 border-matrix-green" alt="">
+                    <p class="text-matrix-darkgreen text-lg mb-6">
+                        Sitio Web de informacion y entretenimiento para los usuarios del Ciber Cafe y adminstradores del ciber cafe estadisticas relevantes. 
+                    </p>
+                    <ul class="flex flex-wrap gap-6 mb-8 text-matrix-darkgreen">
+                        <li>Cliente:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Jaime Lopez Lopez</a></strong>
+                        </li>
+                        <li>Fecha:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Febrero 2016</a></strong>
+                        </li>
+                        <li>Desarrollo:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Sitio Web y Aplicacion Movil Android</a></strong>
+                        </li>
+                    </ul>
+                    <button type="button" class="bg-transparent border-2 border-matrix-green text-matrix-green font-mono px-6 py-2 rounded hover:bg-matrix-green hover:text-black transition-all duration-300" onclick="closeModal('portfolioModal1')">
+                        <i class="fa fa-times"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
+    <div id="portfolioModal2" class="modal-backdrop hidden">
+        <div class="modal-content flex items-center justify-center p-4">
+            <div class="relative bg-[rgba(0,0,0,0.95)] border-2 border-matrix-green max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
+                <div class="absolute top-4 right-4 cursor-pointer z-10" onclick="closeModal('portfolioModal2')">
+                    <div class="w-12 h-12 flex items-center justify-center">
+                        <div class="w-8 h-0.5 bg-matrix-green transform rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
+                        <div class="w-8 h-0.5 bg-matrix-green transform -rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
                     </div>
                 </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Reloj Checker (Checker)</h2>
-                            <hr class="star-primary">
-                            <img src="sitiorelojchecker.png" class="img-responsive img-centered" alt="">
-                            <p>
-                            Sitio Web y Aplicación Movil para el control de checadas y salidas para los empleados de cualquier empresa u organizacion. 
-                            </p>
-                            <ul class="list-inline item-details">
-                                <li>Cliente:
-                                    <strong><a href="#">Dirigido a Empresas u Organizaciones</a>
-                                    </strong>
-                                </li>
-                                <li>Fecha:
-                                    <strong><a href="#">Mayo 2017</a>
-                                    </strong>
-                                </li>
-                                <li>Desarrollo:
-                                    <strong><a href="#">Desarrollo Web y Aplicación Movil Android</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-                        </div>
-                    </div>
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl md:text-4xl font-bold uppercase text-matrix-green mb-6" style="text-shadow: 0 0 15px #00ff00;">Reloj Checker (Checker)</h2>
+                    <hr class="star-divider">
+                    <img src="sitiorelojchecker.png" class="w-full h-auto mx-auto mb-6 border-2 border-matrix-green" alt="">
+                    <p class="text-matrix-darkgreen text-lg mb-6">
+                        Sitio Web y Aplicación Movil para el control de checadas y salidas para los empleados de cualquier empresa u organizacion. 
+                    </p>
+                    <ul class="flex flex-wrap gap-6 mb-8 text-matrix-darkgreen">
+                        <li>Cliente:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Dirigido a Empresas u Organizaciones</a></strong>
+                        </li>
+                        <li>Fecha:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Mayo 2017</a></strong>
+                        </li>
+                        <li>Desarrollo:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Desarrollo Web y Aplicación Movil Android</a></strong>
+                        </li>
+                    </ul>
+                    <button type="button" class="bg-transparent border-2 border-matrix-green text-matrix-green font-mono px-6 py-2 rounded hover:bg-matrix-green hover:text-black transition-all duration-300" onclick="closeModal('portfolioModal2')">
+                        <i class="fa fa-times"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
+    <div id="portfolioModal3" class="modal-backdrop hidden">
+        <div class="modal-content flex items-center justify-center p-4">
+            <div class="relative bg-[rgba(0,0,0,0.95)] border-2 border-matrix-green max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
+                <div class="absolute top-4 right-4 cursor-pointer z-10" onclick="closeModal('portfolioModal3')">
+                    <div class="w-12 h-12 flex items-center justify-center">
+                        <div class="w-8 h-0.5 bg-matrix-green transform rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
+                        <div class="w-8 h-0.5 bg-matrix-green transform -rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
                     </div>
                 </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Agenda Zaleta</h2>
-                            <hr class="star-primary">
-                            <img src="sitioagendazaleta.png" class="img-responsive img-centered" alt="">
-                            
-                            <p>
-                            Desarrollo de una Agenda para el Secretario del Sindicato Nacional de Trabajadores del Seguro Social (SNTSS) para atender al personal de las distintas clinicas del estado de Hidalgo por medio de Internet sitio web y aplicacion movil para Android.
-                            </p>
-                            
-                            <ul class="list-inline item-details">
-                                <li>Cliente:
-                                    <strong><a href="#">Dr.Jaime Velazquez Zaleta</a>
-                                    </strong>
-                                </li>
-                                <li>Fecha:
-                                    <strong><a href="#">Julio 2017</a>
-                                    </strong>
-                                </li>
-                                <li>Desarrollo:
-                                    <strong><a href="#">Desarrollo Web y Aplicación Movil Android</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-                        </div>
-                    </div>
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl md:text-4xl font-bold uppercase text-matrix-green mb-6" style="text-shadow: 0 0 15px #00ff00;">Agenda Zaleta</h2>
+                    <hr class="star-divider">
+                    <img src="sitioagendazaleta.png" class="w-full h-auto mx-auto mb-6 border-2 border-matrix-green" alt="">
+                    
+                    <p class="text-matrix-darkgreen text-lg mb-6">
+                        Desarrollo de una Agenda para el Secretario del Sindicato Nacional de Trabajadores del Seguro Social (SNTSS) para atender al personal de las distintas clinicas del estado de Hidalgo por medio de Internet sitio web y aplicacion movil para Android.
+                    </p>
+                    
+                    <ul class="flex flex-wrap gap-6 mb-8 text-matrix-darkgreen">
+                        <li>Cliente:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Dr.Jaime Velazquez Zaleta</a></strong>
+                        </li>
+                        <li>Fecha:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Julio 2017</a></strong>
+                        </li>
+                        <li>Desarrollo:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Desarrollo Web y Aplicación Movil Android</a></strong>
+                        </li>
+                    </ul>
+                    <button type="button" class="bg-transparent border-2 border-matrix-green text-matrix-green font-mono px-6 py-2 rounded hover:bg-matrix-green hover:text-black transition-all duration-300" onclick="closeModal('portfolioModal3')">
+                        <i class="fa fa-times"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
+    <div id="portfolioModal4" class="modal-backdrop hidden">
+        <div class="modal-content flex items-center justify-center p-4">
+            <div class="relative bg-[rgba(0,0,0,0.95)] border-2 border-matrix-green max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
+                <div class="absolute top-4 right-4 cursor-pointer z-10" onclick="closeModal('portfolioModal4')">
+                    <div class="w-12 h-12 flex items-center justify-center">
+                        <div class="w-8 h-0.5 bg-matrix-green transform rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
+                        <div class="w-8 h-0.5 bg-matrix-green transform -rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
                     </div>
                 </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Mezquital Routes</h2>
-                            <hr class="star-primary">
-                            <img src="sitiomezquitalroutes.png" class="img-responsive img-centered" alt="">
-                               <p>
-                                Desarrollo de una Aplicación Movil para Android y Sitio Web, el cual brinda información sobre Costos, Horarios, Oficinas, y Lugares Turisticos, entre otras funciones mas a los usuarios del transporte publico del Valle de Mezquital, realizando traslados mas eficientes y seguros.    
-                            </p>
-                            <ul class="list-inline item-details">
-                                <li>Cliente:
-                                    <strong><a href="#">Usuarios del Transporte Publico</a>
-                                    </strong>
-                                </li>
-                                <li>Fecha:
-                                    <strong><a href="#">Mayo 2016</a>
-                                    </strong>
-                                </li>
-                                <li>Desarrollo:
-                                    <strong><a href="#">Desarrollo Web y Aplicación Movil Android</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-                        </div>
-                    </div>
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl md:text-4xl font-bold uppercase text-matrix-green mb-6" style="text-shadow: 0 0 15px #00ff00;">Mezquital Routes</h2>
+                    <hr class="star-divider">
+                    <img src="sitiomezquitalroutes.png" class="w-full h-auto mx-auto mb-6 border-2 border-matrix-green" alt="">
+                    <p class="text-matrix-darkgreen text-lg mb-6">
+                        Desarrollo de una Aplicación Movil para Android y Sitio Web, el cual brinda información sobre Costos, Horarios, Oficinas, y Lugares Turisticos, entre otras funciones mas a los usuarios del transporte publico del Valle de Mezquital, realizando traslados mas eficientes y seguros.    
+                    </p>
+                    <ul class="flex flex-wrap gap-6 mb-8 text-matrix-darkgreen">
+                        <li>Cliente:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Usuarios del Transporte Publico</a></strong>
+                        </li>
+                        <li>Fecha:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Mayo 2016</a></strong>
+                        </li>
+                        <li>Desarrollo:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Desarrollo Web y Aplicación Movil Android</a></strong>
+                        </li>
+                    </ul>
+                    <button type="button" class="bg-transparent border-2 border-matrix-green text-matrix-green font-mono px-6 py-2 rounded hover:bg-matrix-green hover:text-black transition-all duration-300" onclick="closeModal('portfolioModal4')">
+                        <i class="fa fa-times"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
+    <div id="portfolioModal5" class="modal-backdrop hidden">
+        <div class="modal-content flex items-center justify-center p-4">
+            <div class="relative bg-[rgba(0,0,0,0.95)] border-2 border-matrix-green max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
+                <div class="absolute top-4 right-4 cursor-pointer z-10" onclick="closeModal('portfolioModal5')">
+                    <div class="w-12 h-12 flex items-center justify-center">
+                        <div class="w-8 h-0.5 bg-matrix-green transform rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
+                        <div class="w-8 h-0.5 bg-matrix-green transform -rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
                     </div>
                 </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Bitacora de Pacientes</h2>
-                            <hr class="star-primary">
-                            <img src="sitiodracevedo.png" class="img-responsive img-centered" alt="">
-                            <p>
-                                Desarrollo de una bitacora de citas para llevar a cabo la candalerizacion de sus pacientes a lo largo de la jornada, reservando su lugar anticipadamente por el paciente o asistente local. 
-                            </p>                              
-                            <ul class="list-inline item-details">
-                                <li>Cliente:
-                                    <strong><a href="#">Dr.Daniel Acevedo</a>
-                                    </strong>
-                                </li>
-                                <li>Fecha:
-                                    <strong><a href="#">Noviembre 2016</a>
-                                    </strong>
-                                </li>
-                                <li>Desarrollo:
-                                    <strong><a href="#">Desarrollo Web</a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-                        </div>
-                    </div>
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl md:text-4xl font-bold uppercase text-matrix-green mb-6" style="text-shadow: 0 0 15px #00ff00;">Bitacora de Pacientes</h2>
+                    <hr class="star-divider">
+                    <img src="sitiodracevedo.png" class="w-full h-auto mx-auto mb-6 border-2 border-matrix-green" alt="">
+                    <p class="text-matrix-darkgreen text-lg mb-6">
+                        Desarrollo de una bitacora de citas para llevar a cabo la candalerizacion de sus pacientes a lo largo de la jornada, reservando su lugar anticipadamente por el paciente o asistente local. 
+                    </p>                              
+                    <ul class="flex flex-wrap gap-6 mb-8 text-matrix-darkgreen">
+                        <li>Cliente:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Dr.Daniel Acevedo</a></strong>
+                        </li>
+                        <li>Fecha:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Noviembre 2016</a></strong>
+                        </li>
+                        <li>Desarrollo:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Desarrollo Web</a></strong>
+                        </li>
+                    </ul>
+                    <button type="button" class="bg-transparent border-2 border-matrix-green text-matrix-green font-mono px-6 py-2 rounded hover:bg-matrix-green hover:text-black transition-all duration-300" onclick="closeModal('portfolioModal5')">
+                        <i class="fa fa-times"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-content">
-            <div class="close-modal" data-dismiss="modal">
-                <div class="lr">
-                    <div class="rl">
+    <div id="portfolioModal6" class="modal-backdrop hidden">
+        <div class="modal-content flex items-center justify-center p-4">
+            <div class="relative bg-[rgba(0,0,0,0.95)] border-2 border-matrix-green max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg">
+                <div class="absolute top-4 right-4 cursor-pointer z-10" onclick="closeModal('portfolioModal6')">
+                    <div class="w-12 h-12 flex items-center justify-center">
+                        <div class="w-8 h-0.5 bg-matrix-green transform rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
+                        <div class="w-8 h-0.5 bg-matrix-green transform -rotate-45 absolute shadow-[0_0_10px_#00ff00]"></div>
                     </div>
                 </div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2">
-                        <div class="modal-body">
-                            <h2>Sistema de Incidencias Delegacion IMSS Hidalgo</h2>
-                            <hr class="star-primary">
-                            <img src="sitiodelegacionimss.png" class="img-responsive img-centered" alt="">
-                            <p>
-                                Sistema de Incidencias Nivel Delegacional del Instituto Mexicano del Seguro Social, para reportar fallos en Area de Informatica. 
-                            </p>
-                            <ul class="list-inline item-details">
-                                <li>Cliente:
-                                    <strong><a href="#">Delegacion IMSS Hidalgo</a>
-                                    </strong>
-                                </li>
-                                <li>Fecha:
-                                    <strong><a href="#">Marzo 2016</a>
-                                    </strong>
-                                </li>
-                                <li>Desarrollo:
-                                    <strong><a href="#">Desarrollo Web </a>
-                                    </strong>
-                                </li>
-                            </ul>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-                        </div>
-                    </div>
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl md:text-4xl font-bold uppercase text-matrix-green mb-6" style="text-shadow: 0 0 15px #00ff00;">Sistema de Incidencias Delegacion IMSS Hidalgo</h2>
+                    <hr class="star-divider">
+                    <img src="sitiodelegacionimss.png" class="w-full h-auto mx-auto mb-6 border-2 border-matrix-green" alt="">
+                    <p class="text-matrix-darkgreen text-lg mb-6">
+                        Sistema de Incidencias Nivel Delegacional del Instituto Mexicano del Seguro Social, para reportar fallos en Area de Informatica. 
+                    </p>
+                    <ul class="flex flex-wrap gap-6 mb-8 text-matrix-darkgreen">
+                        <li>Cliente:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Delegacion IMSS Hidalgo</a></strong>
+                        </li>
+                        <li>Fecha:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Marzo 2016</a></strong>
+                        </li>
+                        <li>Desarrollo:
+                            <strong><a href="#" class="text-matrix-green hover:shadow-[0_0_10px_#00ff00]">Desarrollo Web </a></strong>
+                        </li>
+                    </ul>
+                    <button type="button" class="bg-transparent border-2 border-matrix-green text-matrix-green font-mono px-6 py-2 rounded hover:bg-matrix-green hover:text-black transition-all duration-300" onclick="closeModal('portfolioModal6')">
+                        <i class="fa fa-times"></i> Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-<!-- jQuery -->
-    <script src="jquery.min.js"></script>
-        
-        </script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="bootstrap.min.js"></script>
 
-    <!-- Plugin JavaScript -->
-    <script src="jquery.easing.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
 
-    <!-- Contact Form JavaScript -->
-    <script src="jqBootstrapValidation.js"></script>
-    <script src="contact_me.js"></script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
 
-    <!-- Theme JavaScript -->
-    <script src="freelancer.min.js"></script>
+        // Modal functions
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal-backdrop').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Scroll to top button
+        window.addEventListener('scroll', function() {
+            const scrollTop = document.getElementById('scroll-top');
+            if (window.pageYOffset > 300) {
+                scrollTop.classList.remove('hidden');
+            } else {
+                scrollTop.classList.add('hidden');
+            }
+        });
+
+        // Contact form validation (basic)
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+            
+            if (name && email && phone && message) {
+                // Here you would normally send the form data
+                alert('Formulario enviado correctamente! (Esta es una demo)');
+                this.reset();
+            } else {
+                alert('Por favor complete todos los campos');
+            }
+        });
+    </script>
 
     <!-- Matrix Rain Animation -->
     <script src="matrix-rain.js"></script>
