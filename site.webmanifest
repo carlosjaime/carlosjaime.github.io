@@ -1,0 +1,15 @@
+{
+  "name": "Carlos Jaime López Martínez — Portafolio",
+  "short_name": "Carlos Jaime",
+  "description": "Senior Software Developer & Software Architect. SaaS, web, mobile e IA.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#05060a",
+  "theme_color": "#05060a",
+  "lang": "es-MX",
+  "icons": [
+    { "src": "/assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/assets/img/avatar.webp", "sizes": "320x320", "type": "image/webp", "purpose": "any" }
+  ]
+}
