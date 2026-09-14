@@ -7,8 +7,7 @@
  *  - it queries its own nodes and returns early when they are absent;
  *  - it never throws into the boot sequence (boot() isolates each one);
  *  - anything animated per-frame registers with the shared rAF scheduler
- *    instead of owning its own loop, so scroll never schedules more than one
- *    frame of work;
+ *    instead of owning its own loop;
  *  - anything decorative checks `prefers-reduced-motion` first.
  */
 
@@ -21,13 +20,14 @@ const $ = (sel, scope = document) => scope.querySelector(sel);
 const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
 const lerp = (from, to, t) => from + (to - from) * t;
+const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
 /* ==========================================================================
    Shared frame loop
    --------------------------------------------------------------------------
-   Two kinds of work: `once` tasks drain on the next frame (scroll handlers
-   that only need to sync state), `always` tasks run every frame while at
-   least one exists (easing loops).
+   `once` tasks drain on the next frame (scroll handlers that only sync
+   state); `always` tasks run every frame while at least one is registered
+   (easing loops). The loop stops itself when nothing is left.
    ========================================================================== */
 
 const onceTasks = new Set();
@@ -40,11 +40,8 @@ function tick() {
   queued.forEach((task) => task());
   alwaysTasks.forEach((task) => task());
 
-  if (onceTasks.size || alwaysTasks.size) {
-    requestAnimationFrame(tick);
-  } else {
-    running = false;
-  }
+  if (onceTasks.size || alwaysTasks.size) requestAnimationFrame(tick);
+  else running = false;
 }
 
 function kick() {
@@ -53,103 +50,81 @@ function kick() {
   requestAnimationFrame(tick);
 }
 
-/** Run `task` on the next animation frame (deduplicated). */
 function nextFrame(task) { onceTasks.add(task); kick(); }
 
-/** Run `task` on every animation frame until the returned function is called. */
 function everyFrame(task) {
   alwaysTasks.add(task);
   kick();
   return () => alwaysTasks.delete(task);
 }
 
-/** Attach a passive scroll listener that syncs once per frame. */
 function onScroll(task) {
   task();
   window.addEventListener('scroll', () => nextFrame(task), { passive: true });
 }
 
 /* ==========================================================================
-   Intro curtain
+   Boot overlay
    ========================================================================== */
 
-function initIntro() {
-  const intro = $('[data-intro]');
-  if (!intro) return;
+function initBootOverlay() {
+  const boot = $('[data-boot]');
+  if (!boot) return;
 
-  if (reduceMotion.matches) {
-    intro.remove();
-    return;
-  }
+  if (reduceMotion.matches) { boot.remove(); return; }
 
   const dismiss = () => {
-    intro.classList.add('is-done');
-    window.setTimeout(() => intro.remove(), 900);
+    boot.classList.add('is-done');
+    window.setTimeout(() => boot.remove(), 800);
   };
 
-  window.setTimeout(dismiss, 1400);
-  // Any deliberate input skips the curtain immediately.
+  window.setTimeout(dismiss, 1150);
   ['pointerdown', 'keydown', 'wheel'].forEach((type) =>
     window.addEventListener(type, dismiss, { once: true, passive: true })
   );
 }
 
 /* ==========================================================================
-   Text splitting — wrap each word so it can be masked and staggered
+   Hero terminal — type the command, then stream the output
    ========================================================================== */
 
-function splitWords(el) {
-  if (el.dataset.split === 'done') return;
+function initTerminal() {
+  const terminal = $('[data-terminal]');
+  if (!terminal) return;
 
-  const label = el.textContent.trim().replace(/\s+/g, ' ');
-  let index = 0;
+  const cmdNode = $('[data-terminal-cmd]', terminal);
+  const lines = $$('[data-terminal-out]', terminal);
+  if (!cmdNode) return;
 
-  // Walks the subtree so inline markup (the italic <em> accents) survives:
-  // text nodes become masked words, element nodes are cloned shallow and
-  // repopulated with their own split children.
-  const walk = (node) => {
-    const fragment = document.createDocumentFragment();
+  const command = cmdNode.dataset.terminalCmd || cmdNode.textContent;
 
-    Array.from(node.childNodes).forEach((child) => {
-      if (child.nodeType === Node.TEXT_NODE) {
-        child.textContent.split(/(\s+)/).forEach((part) => {
-          if (!part) return;
-          if (/^\s+$/.test(part)) { fragment.append(document.createTextNode(' ')); return; }
+  if (reduceMotion.matches) {
+    cmdNode.textContent = command;
+    lines.forEach((line) => line.classList.add('is-shown'));
+    return;
+  }
 
-          const outer = document.createElement('span');
-          outer.className = 'word';
-          outer.style.setProperty('--wi', String(index++));
+  cmdNode.textContent = '';
 
-          const inner = document.createElement('span');
-          inner.textContent = part;
+  const run = async () => {
+    await wait(reduceMotion.matches ? 0 : 900);
 
-          outer.append(inner);
-          fragment.append(outer);
-        });
-        return;
-      }
+    for (let i = 1; i <= command.length; i += 1) {
+      cmdNode.textContent = command.slice(0, i);
+      await wait(38);
+    }
 
-      if (child.nodeType === Node.ELEMENT_NODE) {
-        const clone = child.cloneNode(false);
-        clone.append(walk(child));
-        fragment.append(clone);
-      }
-    });
+    await wait(240);
 
-    return fragment;
+    for (const line of lines) {
+      line.classList.add('is-shown');
+      await wait(Number.parseInt(line.dataset.terminalOut, 10) || 90);
+    }
+
+    terminal.dataset.state = 'done';
   };
 
-  const split = walk(el);
-  // Keep a clean accessible name; the split spans are presentational.
-  if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', label);
-  el.replaceChildren(split);
-  el.dataset.split = 'done';
-}
-
-function initSplitText() {
-  const targets = $$('[data-split]');
-  if (!targets.length || reduceMotion.matches) return;
-  targets.forEach(splitWords);
+  run();
 }
 
 /* ==========================================================================
@@ -157,7 +132,7 @@ function initSplitText() {
    ========================================================================== */
 
 function initReveal() {
-  const targets = $$('[data-reveal], [data-reveal-media], [data-split], .rule');
+  const targets = $$('[data-reveal], [data-reveal-media]');
   if (!targets.length) return;
 
   if (!('IntersectionObserver' in window) || reduceMotion.matches) {
@@ -165,7 +140,6 @@ function initReveal() {
     return;
   }
 
-  // Siblings sharing a parent cascade rather than popping in together.
   const groups = new Map();
   targets.forEach((el) => {
     const list = groups.get(el.parentElement) || [];
@@ -174,21 +148,20 @@ function initReveal() {
   });
 
   groups.forEach((list) => {
+    if (list.length < 2) return;
     list.forEach((el, index) => {
-      if (list.length > 1 && !el.style.getPropertyValue('--reveal-delay')) {
-        el.style.setProperty('--reveal-delay', `${Math.min(index, 9) * 65}ms`);
+      if (!el.style.getPropertyValue('--reveal-delay')) {
+        el.style.setProperty('--reveal-delay', `${Math.min(index, 9) * 55}ms`);
       }
     });
   });
 
   const observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-revealed');
-        obs.unobserve(entry.target);
-      });
-    },
+    (entries, obs) => entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-revealed');
+      obs.unobserve(entry.target);
+    }),
     { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
   );
 
@@ -205,15 +178,12 @@ function initNavigation() {
 
   const toggle = $('[data-nav-toggle]');
   const drawer = $('[data-nav-drawer]');
-
   let lastY = window.scrollY;
 
   onScroll(() => {
     const y = window.scrollY;
-    nav.classList.toggle('is-stuck', y > 24);
-    // Only retract once past the hero, and never while the drawer is open.
-    const retract = y > 420 && y > lastY && (!drawer || drawer.hidden);
-    nav.classList.toggle('is-hidden', retract);
+    nav.classList.toggle('is-stuck', y > 20);
+    nav.classList.toggle('is-hidden', y > 420 && y > lastY && (!drawer || drawer.hidden));
     lastY = y;
   });
 
@@ -237,12 +207,11 @@ function initNavigation() {
     };
 
     toggle.addEventListener('click', () => (drawer.hidden ? open() : close()));
-    drawer.addEventListener('click', (e) => { if (e.target.closest('a')) close(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
-    window.addEventListener('resize', () => { if (window.innerWidth >= 940) close(); });
+    drawer.addEventListener('click', (event) => { if (event.target.closest('a')) close(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
+    window.addEventListener('resize', () => { if (window.innerWidth >= 1160) close(); });
   }
 
-  // Scroll spy
   const links = $$('[data-nav-link]');
   const sections = links
     .map((link) => document.getElementById((link.getAttribute('href') || '').slice(1)))
@@ -258,8 +227,7 @@ function initNavigation() {
       let best = 0;
       ratios.forEach((ratio, id) => { if (ratio > best) { best = ratio; bestId = id; } });
       links.forEach((link) => {
-        const active = best > 0 && link.getAttribute('href') === `#${bestId}`;
-        if (active) link.setAttribute('aria-current', 'true');
+        if (best > 0 && link.getAttribute('href') === `#${bestId}`) link.setAttribute('aria-current', 'true');
         else link.removeAttribute('aria-current');
       });
     },
@@ -267,6 +235,199 @@ function initNavigation() {
   );
 
   sections.forEach((section) => spy.observe(section));
+}
+
+/* ==========================================================================
+   Command palette (⌘K / Ctrl+K)
+   ========================================================================== */
+
+function initPalette() {
+  const dialog = $('[data-palette]');
+  if (!dialog || typeof dialog.showModal !== 'function') return;
+
+  const input = $('[data-palette-input]', dialog);
+  const list = $('[data-palette-list]', dialog);
+  if (!input || !list) return;
+
+  const iconFor = (kind) => ({ section: 'i-hash', project: 'i-box', link: 'i-external' }[kind] || 'i-hash');
+
+  // The palette indexes what is already on the page — no separate source of
+  // truth to drift out of sync.
+  const items = [
+    ...$$('[data-nav-link]').map((link) => ({
+      kind: 'section',
+      group: 'Secciones',
+      label: (link.dataset.label || link.textContent).trim(),
+      hint: link.getAttribute('href'),
+      run: () => { document.querySelector(link.getAttribute('href'))?.scrollIntoView(); },
+    })),
+    ...$$('[data-dialog-open]').map((button) => ({
+      kind: 'project',
+      group: 'Proyectos',
+      label: button.textContent.trim(),
+      hint: button.closest('.project')?.dataset.kicker || '',
+      run: () => document.getElementById(button.dataset.dialogOpen)?.showModal(),
+    })),
+    ...$$('[data-palette-link]').map((link) => ({
+      kind: 'link',
+      group: 'Enlaces',
+      label: link.dataset.paletteLink,
+      hint: link.getAttribute('href').replace(/^mailto:/, ''),
+      run: () => window.open(link.href, link.target || '_self', 'noopener'),
+    })),
+  ];
+
+  let matches = items;
+  let active = 0;
+
+  /** Loose subsequence match, the way editors filter command lists. */
+  const score = (haystack, needle) => {
+    const text = haystack.toLowerCase();
+    const query = needle.toLowerCase();
+    if (!query) return 0;
+    if (text.includes(query)) return 100 - text.indexOf(query);
+
+    let cursor = 0;
+    for (const char of query) {
+      cursor = text.indexOf(char, cursor);
+      if (cursor === -1) return -1;
+      cursor += 1;
+    }
+    return 1;
+  };
+
+  const render = () => {
+    list.replaceChildren();
+
+    if (!matches.length) {
+      const empty = document.createElement('p');
+      empty.className = 'palette__empty';
+      empty.textContent = 'Sin resultados';
+      list.append(empty);
+      return;
+    }
+
+    let group = null;
+    matches.forEach((item, index) => {
+      if (item.group !== group) {
+        group = item.group;
+        const heading = document.createElement('p');
+        heading.className = 'palette__group';
+        heading.textContent = group;
+        list.append(heading);
+      }
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'palette__item';
+      button.id = `palette-item-${index}`;
+      button.setAttribute('role', 'option');
+      button.setAttribute('aria-selected', String(index === active));
+      button.innerHTML =
+        `<svg aria-hidden="true" focusable="false"><use href="#${iconFor(item.kind)}"></use></svg>`
+        + `<span></span><small></small>`;
+      $('span', button).textContent = item.label;
+      $('small', button).textContent = item.hint || '';
+      button.addEventListener('click', () => choose(index));
+      list.append(button);
+    });
+
+    const selected = $(`#palette-item-${active}`, list);
+    input.setAttribute('aria-activedescendant', selected ? selected.id : '');
+    selected?.scrollIntoView({ block: 'nearest' });
+  };
+
+  const filter = (query) => {
+    matches = query
+      ? items
+        .map((item) => ({ item, s: score(`${item.label} ${item.hint}`, query) }))
+        .filter((entry) => entry.s >= 0)
+        .sort((a, b) => b.s - a.s)
+        .map((entry) => entry.item)
+      : items;
+    active = 0;
+    render();
+  };
+
+  const choose = (index) => {
+    const item = matches[index];
+    if (!item) return;
+    dialog.close();
+    // Let the dialog finish closing so focus and scrolling land cleanly.
+    window.setTimeout(() => item.run(), 60);
+  };
+
+  const open = () => {
+    if (dialog.open) return;
+    input.value = '';
+    filter('');
+    dialog.showModal();
+    document.body.classList.add('is-locked');
+    input.focus();
+  };
+
+  input.addEventListener('input', () => filter(input.value.trim()));
+
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown' || (event.key === 'n' && event.ctrlKey)) {
+      event.preventDefault();
+      active = (active + 1) % Math.max(matches.length, 1);
+      render();
+    } else if (event.key === 'ArrowUp' || (event.key === 'p' && event.ctrlKey)) {
+      event.preventDefault();
+      active = (active - 1 + matches.length) % Math.max(matches.length, 1);
+      render();
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      choose(active);
+    }
+  });
+
+  dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener('close', () => document.body.classList.remove('is-locked'));
+
+  document.addEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      dialog.open ? dialog.close() : open();
+    }
+  });
+
+  $$('[data-palette-open]').forEach((button) => button.addEventListener('click', open));
+}
+
+/* ==========================================================================
+   Editor tabs
+   ========================================================================== */
+
+function initTabs() {
+  $$('[data-tabs]').forEach((group) => {
+    const tabs = $$('[role="tab"]', group);
+    const panels = tabs.map((tab) => document.getElementById(tab.getAttribute('aria-controls'))).filter(Boolean);
+    if (tabs.length !== panels.length) return;
+
+    const select = (index, focus = true) => {
+      tabs.forEach((tab, i) => {
+        const on = i === index;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        panels[i].hidden = !on;
+      });
+      if (focus) tabs[index].focus();
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => select(index, false));
+      tab.addEventListener('keydown', (event) => {
+        const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+        if (!step) return;
+        event.preventDefault();
+        select((index + step + tabs.length) % tabs.length);
+      });
+    });
+
+    select(Math.max(0, tabs.findIndex((tab) => tab.getAttribute('aria-selected') === 'true')), false);
+  });
 }
 
 /* ==========================================================================
@@ -287,7 +448,7 @@ function initScrollProgress() {
 }
 
 /* ==========================================================================
-   Parallax — scroll depth plus a weighted pointer drift
+   Parallax
    ========================================================================== */
 
 function initParallax() {
@@ -305,7 +466,8 @@ function initParallax() {
   let targetY = 0;
   let x = 0;
   let y = 0;
-  let settling = false;
+  let stop = () => {};
+  let easing = false;
 
   const paint = () => {
     x = lerp(x, targetX, 0.07);
@@ -316,15 +478,10 @@ function initParallax() {
         `translate3d(${(x * drift).toFixed(2)}px, ${(scrollY * speed + y * drift * 0.6).toFixed(2)}px, 0)`;
     });
 
-    const settled = Math.abs(targetX - x) < 0.05 && Math.abs(targetY - y) < 0.05;
-    if (settled && settling) { stop(); settling = false; }
-  };
-
-  let stop = () => {};
-  const start = () => {
-    if (settling) return;
-    settling = true;
-    stop = everyFrame(paint);
+    if (easing && Math.abs(targetX - x) < 0.05 && Math.abs(targetY - y) < 0.05) {
+      stop();
+      easing = false;
+    }
   };
 
   window.addEventListener('scroll', () => { scrollY = window.scrollY; nextFrame(paint); }, { passive: true });
@@ -333,7 +490,7 @@ function initParallax() {
     window.addEventListener('pointermove', (event) => {
       targetX = (event.clientX / window.innerWidth) * 2 - 1;
       targetY = (event.clientY / window.innerHeight) * 2 - 1;
-      start();
+      if (!easing) { easing = true; stop = everyFrame(paint); }
     }, { passive: true });
   }
 
@@ -358,23 +515,19 @@ function initCursor() {
   let looping = false;
 
   const paint = () => {
-    x = lerp(x, targetX, 0.18);
-    y = lerp(y, targetY, 0.18);
+    x = lerp(x, targetX, 0.2);
+    y = lerp(y, targetY, 0.2);
     cursor.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
-
-    if (Math.abs(targetX - x) < 0.1 && Math.abs(targetY - y) < 0.1) {
-      stop();
-      looping = false;
-    }
+    if (Math.abs(targetX - x) < 0.1 && Math.abs(targetY - y) < 0.1) { stop(); looping = false; }
   };
 
-  const HOVER_TARGETS = 'a, button, [role="button"], input, textarea, .project, .card';
+  const HOVER = 'a, button, [role="button"], input, textarea, .project, .card';
 
   window.addEventListener('pointermove', (event) => {
     targetX = event.clientX;
     targetY = event.clientY;
     cursor.classList.add('is-active');
-    cursor.classList.toggle('is-hovering', Boolean(event.target.closest(HOVER_TARGETS)));
+    cursor.classList.toggle('is-hovering', Boolean(event.target.closest(HOVER)));
     if (!looping) { looping = true; stop = everyFrame(paint); }
   }, { passive: true });
 
@@ -389,18 +542,16 @@ function initMagnetic() {
   if (!finePointer.matches || reduceMotion.matches) return;
 
   $$('[data-magnetic]').forEach((el) => {
-    const strength = Number.parseFloat(el.dataset.magnetic) || 0.28;
+    const strength = Number.parseFloat(el.dataset.magnetic) || 0.25;
+    const reset = () => { el.style.transform = ''; };
 
-    const move = (event) => {
+    el.addEventListener('pointermove', (event) => {
       const rect = el.getBoundingClientRect();
       const dx = event.clientX - (rect.left + rect.width / 2);
       const dy = event.clientY - (rect.top + rect.height / 2);
       el.style.transform = `translate3d(${(dx * strength).toFixed(2)}px, ${(dy * strength).toFixed(2)}px, 0)`;
-    };
+    });
 
-    const reset = () => { el.style.transform = ''; };
-
-    el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', reset);
     el.addEventListener('blur', reset);
   });
@@ -414,9 +565,7 @@ function initMarquee() {
   const track = $('[data-marquee]');
   if (!track) return;
 
-  // Duplicate the items so the loop has no visible seam.
-  const originals = Array.from(track.children);
-  track.append(...originals.map((node) => {
+  track.append(...Array.from(track.children).map((node) => {
     const clone = node.cloneNode(true);
     clone.setAttribute('aria-hidden', 'true');
     return clone;
@@ -430,13 +579,13 @@ function initMarquee() {
   let lastY = window.scrollY;
 
   window.addEventListener('scroll', () => {
-    velocity = clamp((window.scrollY - lastY) * 0.35, -28, 28);
+    velocity = clamp((window.scrollY - lastY) * 0.32, -26, 26);
     lastY = window.scrollY;
   }, { passive: true });
 
   const paint = () => {
     velocity *= 0.92;
-    offset -= 0.45 + velocity;
+    offset -= 0.4 + velocity;
 
     const width = half();
     if (width > 0) {
@@ -447,8 +596,7 @@ function initMarquee() {
     track.style.transform = `translate3d(${offset.toFixed(2)}px, 0, 0)`;
   };
 
-  // An always-on rAF loop costs battery for something nobody can see, so the
-  // ticker only runs while it is on screen and the tab is in the foreground.
+  // An always-on rAF loop costs battery for something nobody can see.
   let stop = null;
   let onScreen = true;
 
@@ -459,10 +607,8 @@ function initMarquee() {
   };
 
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([entry]) => {
-      onScreen = entry.isIntersecting;
-      sync();
-    }).observe(track.parentElement || track);
+    new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; sync(); })
+      .observe(track.parentElement || track);
   }
 
   document.addEventListener('visibilitychange', sync);
@@ -470,7 +616,7 @@ function initMarquee() {
 }
 
 /* ==========================================================================
-   Hero role typewriter
+   Role typewriter
    ========================================================================== */
 
 function initTypewriter() {
@@ -481,14 +627,11 @@ function initTypewriter() {
   try { roles = JSON.parse(host.dataset.typewriter); } catch { roles = []; }
   if (!Array.isArray(roles) || !roles.length) return;
 
-  if (reduceMotion.matches) {
-    host.textContent = roles[0];
-    return;
-  }
+  if (reduceMotion.matches) { host.textContent = roles[0]; return; }
 
-  const TYPE = 52;
-  const ERASE = 26;
-  const HOLD = 2000;
+  const TYPE = 50;
+  const ERASE = 25;
+  const HOLD = 2100;
 
   let roleIndex = 0;
   let chars = 0;
@@ -505,13 +648,13 @@ function initTypewriter() {
     else if (erasing && chars === 0) {
       erasing = false;
       roleIndex = (roleIndex + 1) % roles.length;
-      delay = 300;
+      delay = 280;
     }
 
     timer = window.setTimeout(tick, delay);
   };
 
-  tick();
+  window.setTimeout(tick, 2600);
 
   document.addEventListener('visibilitychange', () => {
     window.clearTimeout(timer);
@@ -530,10 +673,9 @@ function initCounters() {
   const run = (el) => {
     const target = Number.parseFloat(el.dataset.countTo);
     if (Number.isNaN(target)) return;
-
     if (reduceMotion.matches) { el.textContent = String(target); return; }
 
-    const duration = 1500;
+    const duration = 1400;
     const start = performance.now();
 
     const step = (now) => {
@@ -560,7 +702,7 @@ function initCounters() {
 }
 
 /* ==========================================================================
-   Pointer spotlight on cards
+   Pointer spotlight
    ========================================================================== */
 
 function initSpotlight() {
@@ -589,7 +731,6 @@ function initFilters() {
   const empty = $('[data-projects-empty]');
   const timers = new WeakMap();
 
-  // Label each filter with how many projects it holds.
   buttons.forEach((button) => {
     const value = button.dataset.filter;
     const count = value === 'all'
@@ -609,12 +750,8 @@ function initFilters() {
       card.classList.toggle('is-filtered-out', !show);
       window.clearTimeout(timers.get(card));
 
-      if (show) {
-        card.hidden = false;
-      } else {
-        // Let the fade finish before the card leaves the grid flow.
-        timers.set(card, window.setTimeout(() => { card.hidden = true; }, reduceMotion.matches ? 0 : 260));
-      }
+      if (show) card.hidden = false;
+      else timers.set(card, window.setTimeout(() => { card.hidden = true; }, reduceMotion.matches ? 0 : 240));
     });
 
     if (empty) empty.hidden = matches > 0;
@@ -654,16 +791,11 @@ function initDialogs() {
       return;
     }
 
-    if (event.target.closest('[data-dialog-close]')) {
-      event.target.closest('dialog')?.close();
-    }
+    if (event.target.closest('[data-dialog-close]')) event.target.closest('dialog')?.close();
   });
 
   dialogs.forEach((dialog) => {
-    dialog.addEventListener('click', (event) => {
-      // Only a click on the backdrop itself dismisses the sheet.
-      if (event.target === dialog) dialog.close();
-    });
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
     dialog.addEventListener('close', () => document.body.classList.remove('is-locked'));
   });
 }
@@ -677,17 +809,36 @@ function initBackToTop() {
   if (!button) return;
 
   onScroll(() => button.classList.toggle('is-visible', window.scrollY > window.innerHeight));
-
   button.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
   });
 }
 
 /* ==========================================================================
+   Status bar
+   ========================================================================== */
+
+function initStatusBar() {
+  const clock = $('[data-clock]');
+  if (!clock) return;
+
+  const format = new Intl.DateTimeFormat('es-MX', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'America/Mexico_City',
+  });
+
+  const update = () => { clock.textContent = `${format.format(new Date())} CST`; };
+  update();
+  window.setInterval(update, 30_000);
+}
+
+/* ==========================================================================
    Contact form
    --------------------------------------------------------------------------
-   The site is static (GitHub Pages), so there is no endpoint to POST to:
-   validate here, then hand a fully composed message to the mail client.
+   Static hosting: no endpoint to POST to. Validate here, then hand a fully
+   composed message to the visitor's mail client.
    ========================================================================== */
 
 function initContactForm() {
@@ -728,13 +879,12 @@ function initContactForm() {
     const lines = [`Nombre: ${read('name')}`, `Email: ${read('email')}`];
     if (read('company')) lines.push(`Empresa / proyecto: ${read('company')}`);
     lines.push('', read('message'));
-    const body = lines.join('\n');
 
     window.location.href = `mailto:${recipient}`
       + `?subject=${encodeURIComponent(`Nuevo contacto desde el portafolio — ${read('name')}`)}`
-      + `&body=${encodeURIComponent(body)}`;
+      + `&body=${encodeURIComponent(lines.join('\n'))}`;
 
-    if (status) status.textContent = 'Abriendo tu cliente de correo con el mensaje listo para enviar…';
+    if (status) status.textContent = '→ Abriendo tu cliente de correo con el mensaje listo para enviar…';
   });
 }
 
@@ -750,7 +900,7 @@ function initCopy() {
     button.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(button.dataset.copy);
-        label.textContent = 'Copiado';
+        label.textContent = '✓ copiado';
       } catch {
         label.textContent = button.dataset.copy;
       }
@@ -774,10 +924,12 @@ function initYear() {
 
 function boot() {
   [
-    initIntro,
-    initSplitText,
+    initBootOverlay,
+    initTerminal,
     initReveal,
     initNavigation,
+    initPalette,
+    initTabs,
     initScrollProgress,
     initParallax,
     initCursor,
@@ -789,6 +941,7 @@ function boot() {
     initFilters,
     initDialogs,
     initBackToTop,
+    initStatusBar,
     initContactForm,
     initCopy,
     initYear,

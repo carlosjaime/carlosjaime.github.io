@@ -1,12 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CJ">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#22d3ee"/>
-      <stop offset="0.55" stop-color="#a78bfa"/>
-      <stop offset="1" stop-color="#4ade80"/>
+      <stop offset="0" stop-color="#3ddc91"/>
+      <stop offset="0.55" stop-color="#4fd6ff"/>
+      <stop offset="1" stop-color="#7b8cff"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="14" fill="url(#g)"/>
-  <text x="32" y="43" text-anchor="middle" font-family="'Space Grotesk',Verdana,sans-serif"
-        font-size="28" font-weight="700" fill="#05060a">CJ</text>
+  <rect width="64" height="64" rx="14" fill="#070a0e"/>
+  <rect x="2.5" y="2.5" width="59" height="59" rx="12" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <path d="M16 26l7 6-7 6" fill="none" stroke="url(#g)" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M30 39h18" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round"/>
 </svg>

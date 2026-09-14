@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>404 — Página no encontrada · Carlos Jaime López Martínez</title>
+<title>404 — Ruta no encontrada · Carlos Jaime López Martínez</title>
 <meta name="description" content="La página que buscas no existe o cambió de dirección.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#05060a">
+<meta name="theme-color" content="#070a0e">
 <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/css/fonts.css">
 <link rel="stylesheet" href="/assets/css/tokens.css">
@@ -15,34 +15,48 @@
 <link rel="stylesheet" href="/assets/css/sections.css">
 <style>
   .notfound { min-block-size: 100svh; display: grid; place-items: center; padding-block: var(--sp-9); }
-  .notfound__inner { display: grid; gap: var(--sp-5); justify-items: start; max-width: 44ch; }
+  .notfound__panel { inline-size: min(680px, 100%); }
+  .notfound__body { display: grid; gap: var(--sp-5); padding: clamp(1.5rem, 5vw, 2.5rem); }
   .notfound__code {
     font-family: var(--font-display);
-    font-size: clamp(4.5rem, 20vw, 10rem);
-    line-height: 0.9;
-    letter-spacing: -0.04em;
+    font-size: clamp(3rem, 12vw, 5rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: var(--track-display);
   }
-  .notfound__code em { font-style: italic; color: var(--champagne); }
+  .notfound__code span { color: var(--red); }
+  .notfound__line { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--fg-muted); }
+  .notfound__line b { color: var(--signal); font-weight: 400; }
 </style>
 </head>
 <body>
 
 <div class="ambient" aria-hidden="true">
-  <div class="ambient__rules"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="ambient__dots"></div>
   <div class="ambient__glow ambient__glow--a"></div>
   <div class="ambient__glow ambient__glow--b"></div>
   <div class="ambient__noise"></div>
 </div>
 
 <main class="notfound">
-  <div class="shell notfound__inner">
-    <p class="eyebrow">Error 404</p>
-    <p class="notfound__code">Página <em>perdida</em></p>
-    <p class="section-lead">
-      La ruta que buscas se movió, cambió de nombre o nunca estuvo aquí.
-      Vuelve al inicio para seguir explorando el portafolio.
-    </p>
-    <a class="btn btn--primary" href="/"><span class="btn__label">Volver al inicio</span></a>
+  <div class="shell notfound__panel">
+    <div class="panel">
+      <div class="panel__bar">
+        <span class="panel__lights" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="panel__name">jimmy@codexfight — ~/portfolio</span>
+        <span class="panel__meta">zsh</span>
+      </div>
+      <div class="notfound__body">
+        <p class="notfound__line"><b>➜</b> cd ~/portfolio/esta-ruta</p>
+        <p class="notfound__code">404 <span>not found</span></p>
+        <p class="notfound__line">cd: no such file or directory</p>
+        <p class="section-lead">
+          La ruta que buscas se movió, cambió de nombre o nunca existió.
+          Vuelve al inicio para seguir explorando el portafolio.
+        </p>
+        <p><a class="btn btn--primary" href="/"><span class="btn__label">cd ~/</span></a></p>
+      </div>
+    </div>
   </div>
 </main>
 

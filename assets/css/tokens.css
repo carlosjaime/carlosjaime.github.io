@@ -1,120 +1,134 @@
 /* ==========================================================================
    Design tokens — single source of truth.
 
-   Direction: "Obsidiana & Champán". Warm near-monochrome dark canvas, one
-   restrained metallic accent, editorial serif display against a humanist UI
-   sans. Elegance here comes from restraint: the accent is a seasoning, never
-   a flood.
+   Direction: engineering console. A cool graphite canvas, a signal-green
+   accent used the way a terminal uses it (status, prompts, success), an
+   indigo for the AI surfaces, and a syntax palette that is shared by the code
+   panels and the UI so the whole page reads as one tool.
    ========================================================================== */
 
 :root {
   color-scheme: dark;
 
-  /* --- Color primitives ------------------------------------------------- */
-  /* Warm-neutral ink ramp. Every step carries a touch of red/yellow so the
-     dark surfaces read as paper-at-night rather than as cold screen grey. */
-  --ink-900: #08080a;
-  --ink-850: #0b0b0d;
-  --ink-800: #0f0f12;
-  --ink-700: #16161a;
-  --ink-600: #1e1e23;
-  --ink-500: #2a2a30;
+  /* --- Graphite ramp ---------------------------------------------------- */
+  --slate-950: #070a0e;
+  --slate-900: #0a0e14;
+  --slate-850: #0d121a;
+  --slate-800: #111823;
+  --slate-750: #16202d;
+  --slate-700: #1c2836;
+  --slate-600: #263343;
 
-  --paper-100: #f4f2ee;
-  --paper-200: #e4e1db;
-  --paper-300: #b8b4ac;
-  --paper-400: #8b877f;
-  --paper-500: #63605a;
+  --fog-100: #e8eef6;
+  --fog-200: #c9d4e2;
+  --fog-300: #93a2b6;
+  --fog-400: #6b7a8f;
+  --fog-500: #4d5a6b;
 
-  /* Single accent: champagne, with a warmer and a cooler neighbour used only
-     for gradients and hairlines. */
-  --champagne:      #c9a96a;
-  --champagne-lift: #e3cb9a;
-  --champagne-deep: #9c8049;
-  --ember:          #c08457;
-  --sage:           #7fa88a;
+  /* --- Signal colors ----------------------------------------------------- */
+  --signal:        #3ddc91;   /* terminal green: prompts, ok, accent */
+  --signal-dim:    #2aa870;
+  --signal-lift:   #7ff0bb;
+  --indigo:        #7b8cff;   /* AI surfaces, links */
+  --violet:        #b07cff;
+  --cyan:          #4fd6ff;
+  --amber:         #f0b429;
+  --red:           #ff6b6b;
 
-  /* --- Semantic roles --------------------------------------------------- */
-  --bg-page:      var(--ink-900);
-  --bg-sunken:    var(--ink-850);
-  --bg-elevated:  var(--ink-800);
-  --bg-raised:    var(--ink-700);
+  /* --- Syntax (shared by code panels and UI accents) -------------------- */
+  --syn-comment: var(--fog-500);
+  --syn-key:     var(--violet);
+  --syn-fn:      var(--cyan);
+  --syn-str:     var(--signal);
+  --syn-num:     var(--amber);
+  --syn-var:     var(--fog-100);
+  --syn-punct:   var(--fog-400);
 
-  --fg-default: var(--paper-100);
-  --fg-soft:    var(--paper-200);
-  --fg-muted:   var(--paper-300);
-  --fg-faint:   var(--paper-400);
-  --fg-accent:  var(--champagne);
+  /* --- Semantic roles ---------------------------------------------------- */
+  --bg-page:     var(--slate-950);
+  --bg-sunken:   var(--slate-900);
+  --bg-panel:    var(--slate-850);
+  --bg-raised:   var(--slate-800);
+  --bg-chrome:   var(--slate-750);
 
-  --line-hair:   color-mix(in srgb, var(--paper-100) 7%,  transparent);
-  --line-soft:   color-mix(in srgb, var(--paper-100) 12%, transparent);
-  --line-strong: color-mix(in srgb, var(--paper-100) 22%, transparent);
-  --line-accent: color-mix(in srgb, var(--champagne) 46%, transparent);
+  --fg-default: var(--fog-100);
+  --fg-soft:    var(--fog-200);
+  --fg-muted:   var(--fog-300);
+  --fg-faint:   var(--fog-400);
+  --fg-accent:  var(--signal);
 
-  --tint-accent: color-mix(in srgb, var(--champagne) 12%, transparent);
-  --glow-accent: color-mix(in srgb, var(--champagne) 26%, transparent);
+  --line-hair:   color-mix(in srgb, var(--fog-100) 8%,  transparent);
+  --line-soft:   color-mix(in srgb, var(--fog-100) 14%, transparent);
+  --line-strong: color-mix(in srgb, var(--fog-100) 24%, transparent);
+  --line-signal: color-mix(in srgb, var(--signal) 45%, transparent);
 
-  --gradient-accent: linear-gradient(100deg, var(--champagne-deep), var(--champagne-lift) 48%, var(--ember));
-  --gradient-hair:   linear-gradient(90deg, transparent, var(--line-accent), transparent);
-  --gradient-sheen:  linear-gradient(100deg, transparent 38%, color-mix(in srgb, #fff 16%, transparent) 50%, transparent 62%);
+  --tint-signal: color-mix(in srgb, var(--signal) 10%, transparent);
+  --tint-indigo: color-mix(in srgb, var(--indigo) 12%, transparent);
+  --glow-signal: color-mix(in srgb, var(--signal) 28%, transparent);
 
-  /* --- Typography ------------------------------------------------------- */
-  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, "Times New Roman", serif;
-  --font-ui: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --gradient-signal: linear-gradient(100deg, var(--signal), var(--cyan) 55%, var(--indigo));
+  --gradient-hair:   linear-gradient(90deg, transparent, var(--line-signal), transparent);
 
-  /* Fluid scale. Mins are tuned for a 360px viewport, maxes for 1440px+. */
+  /* --- Typography -------------------------------------------------------- */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
   --fs-2xs:  clamp(0.66rem, 0.64rem + 0.09vw, 0.72rem);
-  --fs-xs:   clamp(0.74rem, 0.72rem + 0.11vw, 0.81rem);
+  --fs-xs:   clamp(0.74rem, 0.72rem + 0.12vw, 0.82rem);
   --fs-sm:   clamp(0.84rem, 0.81rem + 0.15vw, 0.93rem);
-  --fs-base: clamp(0.95rem, 0.92rem + 0.18vw, 1.06rem);
-  --fs-md:   clamp(1.06rem, 1.00rem + 0.30vw, 1.22rem);
-  --fs-lg:   clamp(1.30rem, 1.16rem + 0.66vw, 1.70rem);
-  --fs-xl:   clamp(1.85rem, 1.50rem + 1.70vw, 3.05rem);
-  --fs-2xl:  clamp(2.40rem, 1.75rem + 3.10vw, 4.40rem);
-  --fs-3xl:  clamp(2.70rem, 1.75rem + 4.60vw, 5.75rem);
+  --fs-base: clamp(0.94rem, 0.91rem + 0.18vw, 1.04rem);
+  --fs-md:   clamp(1.04rem, 0.98rem + 0.30vw, 1.20rem);
+  --fs-lg:   clamp(1.26rem, 1.12rem + 0.66vw, 1.66rem);
+  --fs-xl:   clamp(1.70rem, 1.34rem + 1.70vw, 2.85rem);
+  --fs-2xl:  clamp(2.15rem, 1.55rem + 2.90vw, 4.00rem);
+  --fs-3xl:  clamp(2.40rem, 1.60rem + 4.00vw, 5.20rem);
 
-  --lh-display: 0.98;
-  --lh-tight: 1.14;
-  --lh-snug: 1.34;
-  --lh-normal: 1.68;
+  --lh-display: 1.02;
+  --lh-tight: 1.18;
+  --lh-snug: 1.4;
+  --lh-normal: 1.7;
+  --lh-code: 1.85;
 
-  --track-display: -0.022em;
-  --track-tight: -0.012em;
-  --track-caps: 0.22em;
+  --track-display: -0.035em;
+  --track-tight: -0.015em;
+  --track-caps: 0.16em;
 
-  /* --- Spacing ---------------------------------------------------------- */
+  /* --- Spacing ----------------------------------------------------------- */
   --sp-1: 0.25rem;  --sp-2: 0.5rem;  --sp-3: 0.75rem;  --sp-4: 1rem;
   --sp-5: 1.5rem;   --sp-6: 2rem;    --sp-7: 2.75rem;  --sp-8: 3.5rem;
-  --sp-9: 4.5rem;   --sp-10: 6rem;   --sp-11: 8rem;    --sp-12: 11rem;
+  --sp-9: 4.5rem;   --sp-10: 6rem;   --sp-11: 8rem;
 
-  --section-pad: clamp(4.5rem, 10vw, 10rem);
-  --gutter: clamp(1.25rem, 5vw, 4rem);
-  --content-max: 1240px;
-  --prose-max: 62ch;
+  --section-pad: clamp(4rem, 9vw, 8.5rem);
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --content-max: 1280px;
+  --prose-max: 66ch;
 
-  /* --- Radii & elevation ------------------------------------------------ */
-  --r-xs: 4px; --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 26px; --r-pill: 999px;
+  --statusbar-h: 1.85rem;
 
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.45);
-  --shadow-md: 0 10px 30px -12px rgb(0 0 0 / 0.7);
-  --shadow-lg: 0 40px 90px -40px rgb(0 0 0 / 0.9);
+  /* --- Radii & elevation -------------------------------------------------- */
+  --r-xs: 3px; --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px; --r-pill: 999px;
 
-  /* --- Motion ----------------------------------------------------------- */
-  /* One expressive ease for entrances, one calm ease for state changes. */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 12px 32px -14px rgb(0 0 0 / 0.8);
+  --shadow-lg: 0 40px 90px -40px rgb(0 0 0 / 0.95);
+  --shadow-signal: 0 0 0 1px var(--line-signal), 0 16px 50px -24px var(--glow-signal);
+
+  /* --- Motion ------------------------------------------------------------- */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
 
-  --dur-instant: 120ms;
-  --dur-fast: 220ms;
-  --dur-base: 420ms;
-  --dur-slow: 720ms;
-  --dur-reveal: 1100ms;
+  --dur-instant: 110ms;
+  --dur-fast: 190ms;
+  --dur-base: 360ms;
+  --dur-slow: 620ms;
+  --dur-reveal: 900ms;
 
-  /* --- Layering --------------------------------------------------------- */
+  /* --- Layering ----------------------------------------------------------- */
   --z-canvas: 0;
   --z-content: 1;
+  --z-status: 50;
   --z-nav: 60;
   --z-float: 70;
   --z-overlay: 90;

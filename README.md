@@ -1,25 +1,32 @@
 # carlosjaime.github.io
 
 Portafolio personal de **Carlos Jaime “Jimmy” López Martínez** — Senior Software Developer,
-Software Architect y Product Builder.
+Software Architect, CEO & Product Builder.
 
 Sitio estático, sin build step y sin dependencias de terceros en runtime.
 Se publica tal cual desde GitHub Pages.
 
 ## Dirección de diseño
 
-**Obsidiana & champán.** Lienzo casi monocromo cálido, una sola familia de acento metálico
-y tipografía editorial: serif de display contra una sans humanista. La elegancia viene de la
-contención — el acento condimenta, no inunda.
+**Consola de ingeniería.** Lienzo grafito frío, un verde de señal usado como lo usa una
+terminal (prompt, estado, éxito), un índigo para las superficies de IA, y una paleta de
+sintaxis compartida por los paneles de código y la UI, de modo que toda la página se lee
+como una sola herramienta.
+
+Los recursos del tema no son decorativos: el hero es una terminal que ejecuta
+`whoami --full`, el "sobre mí" es un editor con pestañas y números de línea, la trayectoria
+es un `git log --graph` con hashes y `HEAD`, los proyectos son tarjetas de repositorio con
+punto de lenguaje, y hay una **paleta de comandos ⌘K** que indexa secciones, proyectos y
+enlaces.
 
 | Rol | Familia | Uso |
 |-----|---------|-----|
-| Display | **Instrument Serif** (regular + itálica) | Nombre, títulos de sección, roles del timeline |
-| UI / texto | **Plus Jakarta Sans** (variable 400–700) | Cuerpo, botones, navegación |
-| Mono | **JetBrains Mono** (variable 400–500) | Índices, etiquetas, metadatos, chips |
+| Display | **Space Grotesk** (variable 500–700) | Nombre, títulos de sección, roles |
+| UI / texto | **IBM Plex Sans** (variable 400–600) | Cuerpo y leads |
+| Mono | **IBM Plex Mono** (400 / 500 / 600) | Terminal, código, nav, etiquetas, chips, status bar |
 
 Todas **self-hosted** (`assets/fonts/`, subsets latin + latin-ext, woff2): sin request a
-`fonts.gstatic.com`, sin DNS ni TLS de terceros en la ruta crítica. ~60 KB para el render inicial.
+`fonts.gstatic.com`, sin DNS ni TLS de terceros en la ruta crítica.
 
 ## Stack
 
@@ -40,9 +47,9 @@ Todas **self-hosted** (`assets/fonts/`, subsets latin + latin-ext, woff2): sin r
 ├── assets/
 │   ├── css/
 │   │   ├── fonts.css       # @font-face de las fuentes self-hosted
-│   │   ├── tokens.css      # Design tokens: color, tipografía, espaciado, motion
+│   │   ├── tokens.css      # Tokens: grafito, señales, sintaxis, tipografía, motion
 │   │   ├── base.css        # Reset, defaults, primitivas tipográficas, a11y
-│   │   ├── components.css  # Nav, botones, chips, cards, dialogs, formulario, footer
+│   │   ├── components.css  # Chrome de ventana, nav, paleta ⌘K, código, form, status bar
 │   │   └── sections.css    # Layout por sección + utilidades de animación
 │   ├── fonts/              # woff2, subsets latin y latin-ext
 │   ├── js/
@@ -60,24 +67,29 @@ Un solo `requestAnimationFrame` compartido coordina todo lo que anima por frame.
 scheduler distingue tareas *once* (handlers de scroll que solo sincronizan estado) de
 tareas *always* (loops con easing), y se apaga solo cuando no queda trabajo.
 
-- **Cortina de entrada** de ~1.4 s, saltable con cualquier input deliberado.
-- **Reveal por palabras**: los títulos se parten en `<span class="word">` enmascarados que
-  suben escalonados. El split recorre el árbol, así que la itálica de acento sobrevive, y
-  deja un `aria-label` limpio para lectores de pantalla.
-- **Parallax** de scroll y puntero en las luces ambientales y el retrato, con easing ponderado.
-- **Cursor propio** con anillo que crece sobre elementos interactivos (solo `pointer: fine`).
-- **Botones magnéticos**, spotlight que sigue el cursor en cards, marquee que acelera con la
-  velocidad de scroll y se pausa cuando sale de pantalla o la pestaña pierde el foco.
-- Reveals de media por `clip-path`, contadores, typewriter de roles, barra de progreso.
+- **Secuencia de arranque**: overlay de boot, el hero teclea `whoami --full` y el output
+  aparece línea por línea.
+- **Paleta de comandos ⌘K / Ctrl+K** con filtrado por subsecuencia, navegación con flechas
+  y `aria-activedescendant`. Se construye leyendo el DOM, así que no hay una segunda fuente
+  de verdad que se desincronice.
+- **Parallax** de scroll y puntero en las luces ambientales y la retícula de puntos.
+- **Cursor propio** que se expande sobre elementos interactivos (solo `pointer: fine`).
+- Botones magnéticos, spotlight en cards, marquee que acelera con la velocidad de scroll y
+  se pausa fuera de pantalla, reveals por `clip-path`, contadores, typewriter de roles,
+  scanline y barra de progreso.
 
 Todo se desactiva con `prefers-reduced-motion: reduce`.
 
 ## Accesibilidad
 
 Landmarks correctos, skip link, foco visible, `aria-current` en la navegación por scroll,
-`<dialog>` nativo (el navegador gestiona foco y `Escape`), formulario con errores asociados
-y `aria-live`. Las animaciones dependen de una clase `js` en `<html>`: **sin JavaScript nada
-queda oculto**, y lo mismo al imprimir.
+pestañas con patrón ARIA completo (flechas + `tabindex` móvil), `<dialog>` nativo para
+proyectos y paleta (el navegador gestiona foco y `Escape`), formulario con errores
+asociados y `aria-live`.
+
+Las animaciones dependen de una clase `js` en `<html>`: **sin JavaScript nada queda
+oculto** — ni el overlay de boot (que no llega a mostrarse) ni el output de la terminal,
+que permanece en el documento para lectores y buscadores. Lo mismo al imprimir.
 
 ## Desarrollo local
 

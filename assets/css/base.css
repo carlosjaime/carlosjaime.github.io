@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Reset, document defaults, typographic primitives, a11y utilities.
+   Reset, document defaults, typography primitives, a11y utilities.
    ========================================================================== */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -15,16 +15,15 @@ html {
 
 body {
   min-height: 100svh;
+  padding-block-end: var(--statusbar-h);
   background-color: var(--bg-page);
   color: var(--fg-default);
   font-family: var(--font-ui);
   font-size: var(--fs-base);
-  font-weight: 400;
   line-height: var(--lh-normal);
   font-synthesis-weight: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
@@ -37,18 +36,15 @@ input, button, textarea, select { font: inherit; color: inherit; }
 button { background: none; border: none; padding: 0; cursor: pointer; }
 ul, ol { list-style: none; padding: 0; }
 
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: color var(--dur-fast) var(--ease-soft);
-}
+a { color: inherit; text-decoration: none; transition: color var(--dur-fast) var(--ease-soft); }
 
-::selection { background: var(--champagne); color: var(--ink-900); }
+code, kbd, samp, pre { font-family: var(--font-mono); font-size: 0.94em; }
 
-/* --- Display type --------------------------------------------------------- */
+::selection { background: color-mix(in srgb, var(--signal) 32%, transparent); color: #fff; }
+
 h1, h2, h3 {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 600;
   line-height: var(--lh-display);
   letter-spacing: var(--track-display);
   text-wrap: balance;
@@ -63,28 +59,23 @@ h4, h5, h6 {
 
 p { text-wrap: pretty; }
 
-.serif-italic {
-  font-style: italic;
-  color: var(--fg-accent);
-}
-
 /* --- Focus ---------------------------------------------------------------- */
 :focus-visible {
-  outline: 2px solid var(--champagne);
-  outline-offset: 3px;
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
   border-radius: var(--r-xs);
 }
 
 /* --- Scrollbar ------------------------------------------------------------ */
 @supports selector(::-webkit-scrollbar) {
-  ::-webkit-scrollbar { width: 9px; height: 9px; }
-  ::-webkit-scrollbar-track { background: var(--ink-900); }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--slate-900); }
   ::-webkit-scrollbar-thumb {
-    background: var(--ink-600);
+    background: var(--slate-700);
     border-radius: var(--r-pill);
-    border: 2px solid var(--ink-900);
+    border: 2px solid var(--slate-900);
   }
-  ::-webkit-scrollbar-thumb:hover { background: var(--champagne-deep); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--signal-dim); }
 }
 
 /* --- A11y helpers --------------------------------------------------------- */
@@ -104,8 +95,9 @@ p { text-wrap: pretty; }
   left: var(--sp-3);
   z-index: var(--z-cursor);
   padding: var(--sp-3) var(--sp-5);
-  background: var(--champagne);
-  color: var(--ink-900);
+  background: var(--signal);
+  color: var(--slate-950);
+  font-family: var(--font-mono);
   font-weight: 600;
   font-size: var(--fs-sm);
   border-radius: var(--r-sm);
@@ -137,83 +129,56 @@ p { text-wrap: pretty; }
   background: var(--line-hair);
 }
 
-/* --- Editorial section header --------------------------------------------- */
+/* --- Section header: a file path, then the heading ------------------------ */
 .section-head {
   display: grid;
-  gap: var(--sp-5);
-  margin-bottom: clamp(2.75rem, 6vw, 5rem);
+  gap: var(--sp-4);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  max-width: 60rem;
 }
 
-@media (min-width: 900px) {
-  .section-head {
-    grid-template-columns: 10rem minmax(0, 1fr);
-    gap: var(--sp-6) var(--sp-8);
-    align-items: start;
-  }
-  .section-head__index { grid-row: span 2; padding-block-start: 0.6rem; }
-}
-
-.section-head__index {
-  display: flex;
-  align-items: baseline;
-  gap: var(--sp-3);
-  font-family: var(--font-mono);
-  font-size: var(--fs-2xs);
-  letter-spacing: var(--track-caps);
-  text-transform: uppercase;
-  color: var(--fg-faint);
-}
-
-.section-head__index b {
-  font-weight: 500;
-  color: var(--champagne);
-}
-
-.section-head__index::after {
-  content: "";
-  flex: 1;
-  block-size: 1px;
-  background: var(--line-soft);
-  transform: scaleX(var(--rule, 1));
-  transform-origin: 0 50%;
-}
-
-.section-title {
-  font-size: var(--fs-xl);
-  max-width: 20ch;
-}
-
-.section-lead {
-  color: var(--fg-muted);
-  font-size: var(--fs-md);
-  max-width: var(--prose-max);
-}
-
-/* --- Eyebrow -------------------------------------------------------------- */
-.eyebrow {
+.path {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--fg-faint);
+  letter-spacing: 0.01em;
+}
+
+.path b { font-weight: 500; color: var(--signal); }
+.path i { font-style: normal; color: var(--fog-500); }
+.path em { font-style: normal; color: var(--fg-soft); }
+
+.section-title { font-size: var(--fs-xl); max-width: 22ch; }
+.section-title span { color: var(--signal); }
+
+.section-lead { color: var(--fg-muted); font-size: var(--fs-md); max-width: var(--prose-max); }
+
+/* --- Inline code token ---------------------------------------------------- */
+.tok {
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--line-hair);
+  border-radius: var(--r-xs);
+  background: var(--bg-raised);
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  color: var(--fg-soft);
+}
+
+/* --- Keyboard hint -------------------------------------------------------- */
+kbd {
+  display: inline-block;
+  min-inline-size: 1.45rem;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--line-soft);
+  border-block-end-width: 2px;
+  border-radius: var(--r-xs);
+  background: var(--bg-chrome);
   font-family: var(--font-mono);
   font-size: var(--fs-2xs);
-  letter-spacing: var(--track-caps);
-  text-transform: uppercase;
-  color: var(--fg-faint);
+  line-height: 1.5;
+  text-align: center;
+  color: var(--fg-muted);
 }
-
-.eyebrow::before {
-  content: "";
-  inline-size: 1.75rem;
-  block-size: 1px;
-  background: var(--champagne);
-}
-
-/* --- Hairline rule -------------------------------------------------------- */
-.rule {
-  block-size: 1px;
-  background: var(--line-hair);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform var(--dur-slow) var(--ease-out);
-}
-.rule.is-revealed { transform: scaleX(1); }
