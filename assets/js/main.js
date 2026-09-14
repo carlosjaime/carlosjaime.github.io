@@ -1,154 +1,185 @@
 /**
  * Portfolio — Carlos Jaime "Jimmy" López Martínez
- * Zero-dependency progressive enhancement layer.
  *
- * Every module is independent and fails soft: if its target nodes are missing
- * the module returns without touching the rest of the page. All motion is
- * gated behind `prefers-reduced-motion` and driven by a single rAF loop so the
- * scroll handlers never do layout work on the main thread more than once a
- * frame.
+ * Zero-dependency progressive enhancement.
+ *
+ * Contract every module follows:
+ *  - it queries its own nodes and returns early when they are absent;
+ *  - it never throws into the boot sequence (boot() isolates each one);
+ *  - anything animated per-frame registers with the shared rAF scheduler
+ *    instead of owning its own loop, so scroll never schedules more than one
+ *    frame of work;
+ *  - anything decorative checks `prefers-reduced-motion` first.
  */
 
 'use strict';
 
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const isFinePointer = window.matchMedia('(pointer: fine)');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const finePointer = window.matchMedia('(pointer: fine)');
 
-/** @param {string} selector @param {ParentNode} [scope] */
-const $ = (selector, scope = document) => scope.querySelector(selector);
-/** @param {string} selector @param {ParentNode} [scope] */
-const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
-
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+const $ = (sel, scope = document) => scope.querySelector(sel);
+const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
+const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+const lerp = (from, to, t) => from + (to - from) * t;
 
 /* ==========================================================================
-   Shared animation frame scheduler
+   Shared frame loop
+   --------------------------------------------------------------------------
+   Two kinds of work: `once` tasks drain on the next frame (scroll handlers
+   that only need to sync state), `always` tasks run every frame while at
+   least one exists (easing loops).
    ========================================================================== */
 
-const frameTasks = new Set();
-let frameHandle = 0;
+const onceTasks = new Set();
+const alwaysTasks = new Set();
+let running = false;
 
-function scheduleFrame() {
-  if (frameHandle) return;
-  frameHandle = requestAnimationFrame(() => {
-    frameHandle = 0;
-    frameTasks.forEach((task) => task());
-  });
+function tick() {
+  const queued = Array.from(onceTasks);
+  onceTasks.clear();
+  queued.forEach((task) => task());
+  alwaysTasks.forEach((task) => task());
+
+  if (onceTasks.size || alwaysTasks.size) {
+    requestAnimationFrame(tick);
+  } else {
+    running = false;
+  }
 }
 
-/** Register a callback executed at most once per animation frame. */
-function onFrame(task) {
-  frameTasks.add(task);
-  return () => frameTasks.delete(task);
+function kick() {
+  if (running) return;
+  running = true;
+  requestAnimationFrame(tick);
+}
+
+/** Run `task` on the next animation frame (deduplicated). */
+function nextFrame(task) { onceTasks.add(task); kick(); }
+
+/** Run `task` on every animation frame until the returned function is called. */
+function everyFrame(task) {
+  alwaysTasks.add(task);
+  kick();
+  return () => alwaysTasks.delete(task);
+}
+
+/** Attach a passive scroll listener that syncs once per frame. */
+function onScroll(task) {
+  task();
+  window.addEventListener('scroll', () => nextFrame(task), { passive: true });
 }
 
 /* ==========================================================================
-   Navigation: sticky state, mobile drawer, scroll spy
+   Intro curtain
    ========================================================================== */
 
-function initNavigation() {
-  const nav = $('[data-nav]');
-  const toggle = $('[data-nav-toggle]');
-  const drawer = $('[data-nav-drawer]');
-  if (!nav) return;
+function initIntro() {
+  const intro = $('[data-intro]');
+  if (!intro) return;
 
-  const setStuck = () => nav.classList.toggle('is-stuck', window.scrollY > 24);
-  setStuck();
-  window.addEventListener('scroll', () => { onFrame(setStuck); scheduleFrame(); }, { passive: true });
-
-  if (toggle && drawer) {
-    const closeDrawer = () => {
-      if (drawer.hidden) return;
-      drawer.hidden = true;
-      toggle.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('is-locked');
-    };
-
-    const openDrawer = () => {
-      drawer.hidden = false;
-      toggle.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('is-locked');
-    };
-
-    toggle.addEventListener('click', () => {
-      drawer.hidden ? openDrawer() : closeDrawer();
-    });
-
-    drawer.addEventListener('click', (event) => {
-      if (event.target.closest('a')) closeDrawer();
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') closeDrawer();
-    });
-
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 900) closeDrawer();
-    });
+  if (reduceMotion.matches) {
+    intro.remove();
+    return;
   }
 
-  // Scroll spy: highlight the nav entry whose section owns the viewport centre.
-  const links = $$('[data-nav-link]');
-  const sections = links
-    .map((link) => {
-      const id = link.getAttribute('href');
-      return id && id.startsWith('#') ? document.getElementById(id.slice(1)) : null;
-    })
-    .filter(Boolean);
-
-  if (!sections.length || !('IntersectionObserver' in window)) return;
-
-  const visible = new Map();
-  const spy = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => visible.set(entry.target.id, entry.intersectionRatio));
-      let bestId = null;
-      let bestRatio = 0;
-      visible.forEach((ratio, id) => {
-        if (ratio > bestRatio) { bestRatio = ratio; bestId = id; }
-      });
-      links.forEach((link) => {
-        const active = bestRatio > 0 && link.getAttribute('href') === `#${bestId}`;
-        active ? link.setAttribute('aria-current', 'true') : link.removeAttribute('aria-current');
-      });
-    },
-    { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.25, 0.5, 1] }
-  );
-
-  sections.forEach((section) => spy.observe(section));
-}
-
-/* ==========================================================================
-   Scroll progress bar
-   ========================================================================== */
-
-function initScrollProgress() {
-  const bar = $('[data-scroll-progress]');
-  if (!bar) return;
-
-  const update = () => {
-    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-    const ratio = scrollable > 0 ? clamp(window.scrollY / scrollable, 0, 1) : 0;
-    bar.style.setProperty('--progress', ratio.toFixed(4));
+  const dismiss = () => {
+    intro.classList.add('is-done');
+    window.setTimeout(() => intro.remove(), 900);
   };
 
-  update();
-  window.addEventListener('scroll', () => { onFrame(update); scheduleFrame(); }, { passive: true });
-  window.addEventListener('resize', update, { passive: true });
+  window.setTimeout(dismiss, 1400);
+  // Any deliberate input skips the curtain immediately.
+  ['pointerdown', 'keydown', 'wheel'].forEach((type) =>
+    window.addEventListener(type, dismiss, { once: true, passive: true })
+  );
 }
 
 /* ==========================================================================
-   Reveal on scroll (staggered)
+   Text splitting — wrap each word so it can be masked and staggered
+   ========================================================================== */
+
+function splitWords(el) {
+  if (el.dataset.split === 'done') return;
+
+  const label = el.textContent.trim().replace(/\s+/g, ' ');
+  let index = 0;
+
+  // Walks the subtree so inline markup (the italic <em> accents) survives:
+  // text nodes become masked words, element nodes are cloned shallow and
+  // repopulated with their own split children.
+  const walk = (node) => {
+    const fragment = document.createDocumentFragment();
+
+    Array.from(node.childNodes).forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        child.textContent.split(/(\s+)/).forEach((part) => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { fragment.append(document.createTextNode(' ')); return; }
+
+          const outer = document.createElement('span');
+          outer.className = 'word';
+          outer.style.setProperty('--wi', String(index++));
+
+          const inner = document.createElement('span');
+          inner.textContent = part;
+
+          outer.append(inner);
+          fragment.append(outer);
+        });
+        return;
+      }
+
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        const clone = child.cloneNode(false);
+        clone.append(walk(child));
+        fragment.append(clone);
+      }
+    });
+
+    return fragment;
+  };
+
+  const split = walk(el);
+  // Keep a clean accessible name; the split spans are presentational.
+  if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', label);
+  el.replaceChildren(split);
+  el.dataset.split = 'done';
+}
+
+function initSplitText() {
+  const targets = $$('[data-split]');
+  if (!targets.length || reduceMotion.matches) return;
+  targets.forEach(splitWords);
+}
+
+/* ==========================================================================
+   Reveal on scroll
    ========================================================================== */
 
 function initReveal() {
-  const targets = $$('[data-reveal]');
+  const targets = $$('[data-reveal], [data-reveal-media], [data-split], .rule');
   if (!targets.length) return;
 
-  if (!('IntersectionObserver' in window) || prefersReducedMotion.matches) {
+  if (!('IntersectionObserver' in window) || reduceMotion.matches) {
     targets.forEach((el) => el.classList.add('is-revealed'));
     return;
   }
+
+  // Siblings sharing a parent cascade rather than popping in together.
+  const groups = new Map();
+  targets.forEach((el) => {
+    const list = groups.get(el.parentElement) || [];
+    list.push(el);
+    groups.set(el.parentElement, list);
+  });
+
+  groups.forEach((list) => {
+    list.forEach((el, index) => {
+      if (list.length > 1 && !el.style.getPropertyValue('--reveal-delay')) {
+        el.style.setProperty('--reveal-delay', `${Math.min(index, 9) * 65}ms`);
+      }
+    });
+  });
 
   const observer = new IntersectionObserver(
     (entries, obs) => {
@@ -158,93 +189,284 @@ function initReveal() {
         obs.unobserve(entry.target);
       });
     },
-    { rootMargin: '0px 0px -12% 0px', threshold: 0.12 }
+    { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
   );
 
-  // Stagger siblings that share a parent so grids cascade instead of popping.
-  const groups = new Map();
-  targets.forEach((el) => {
-    const parent = el.parentElement;
-    const list = groups.get(parent) || [];
-    list.push(el);
-    groups.set(parent, list);
-  });
-
-  groups.forEach((list) => {
-    list.forEach((el, index) => {
-      if (!el.style.getPropertyValue('--reveal-delay')) {
-        el.style.setProperty('--reveal-delay', `${Math.min(index, 8) * 70}ms`);
-      }
-      observer.observe(el);
-    });
-  });
+  targets.forEach((el) => observer.observe(el));
 }
 
 /* ==========================================================================
-   Parallax — scroll depth + pointer tilt on the hero
+   Navigation
+   ========================================================================== */
+
+function initNavigation() {
+  const nav = $('[data-nav]');
+  if (!nav) return;
+
+  const toggle = $('[data-nav-toggle]');
+  const drawer = $('[data-nav-drawer]');
+
+  let lastY = window.scrollY;
+
+  onScroll(() => {
+    const y = window.scrollY;
+    nav.classList.toggle('is-stuck', y > 24);
+    // Only retract once past the hero, and never while the drawer is open.
+    const retract = y > 420 && y > lastY && (!drawer || drawer.hidden);
+    nav.classList.toggle('is-hidden', retract);
+    lastY = y;
+  });
+
+  if (toggle && drawer) {
+    const close = () => {
+      if (drawer.hidden) return;
+      drawer.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menú');
+      document.body.classList.remove('is-locked');
+      toggle.focus({ preventScroll: true });
+    };
+
+    const open = () => {
+      drawer.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Cerrar menú');
+      document.body.classList.add('is-locked');
+      nav.classList.remove('is-hidden');
+      $('a', drawer)?.focus({ preventScroll: true });
+    };
+
+    toggle.addEventListener('click', () => (drawer.hidden ? open() : close()));
+    drawer.addEventListener('click', (e) => { if (e.target.closest('a')) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    window.addEventListener('resize', () => { if (window.innerWidth >= 940) close(); });
+  }
+
+  // Scroll spy
+  const links = $$('[data-nav-link]');
+  const sections = links
+    .map((link) => document.getElementById((link.getAttribute('href') || '').slice(1)))
+    .filter(Boolean);
+
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+
+  const ratios = new Map();
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => ratios.set(entry.target.id, entry.intersectionRatio));
+      let bestId = null;
+      let best = 0;
+      ratios.forEach((ratio, id) => { if (ratio > best) { best = ratio; bestId = id; } });
+      links.forEach((link) => {
+        const active = best > 0 && link.getAttribute('href') === `#${bestId}`;
+        if (active) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    },
+    { rootMargin: '-48% 0px -48% 0px', threshold: [0, 0.2, 0.5, 1] }
+  );
+
+  sections.forEach((section) => spy.observe(section));
+}
+
+/* ==========================================================================
+   Scroll progress
+   ========================================================================== */
+
+function initScrollProgress() {
+  const bar = $('[data-scroll-progress]');
+  if (!bar) return;
+
+  const update = () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.setProperty('--progress', scrollable > 0 ? (window.scrollY / scrollable).toFixed(4) : '0');
+  };
+
+  onScroll(update);
+  window.addEventListener('resize', update, { passive: true });
+}
+
+/* ==========================================================================
+   Parallax — scroll depth plus a weighted pointer drift
    ========================================================================== */
 
 function initParallax() {
-  if (prefersReducedMotion.matches) return;
+  if (reduceMotion.matches) return;
 
   const layers = $$('[data-parallax]').map((el) => ({
     el,
     speed: Number.parseFloat(el.dataset.parallax) || 0.1,
-    axis: el.dataset.parallaxAxis || 'y',
+    drift: Number.parseFloat(el.dataset.parallaxDrift || '0'),
   }));
-
-  const tilters = $$('[data-tilt]').map((el) => ({
-    el,
-    strength: Number.parseFloat(el.dataset.tilt) || 10,
-  }));
-
-  if (!layers.length && !tilters.length) return;
+  if (!layers.length) return;
 
   let scrollY = window.scrollY;
-  let pointerX = 0;
-  let pointerY = 0;
-  let renderedX = 0;
-  let renderedY = 0;
+  let targetX = 0;
+  let targetY = 0;
+  let x = 0;
+  let y = 0;
+  let settling = false;
 
-  const render = () => {
-    // Ease the pointer towards its target for a weighted, non-jittery feel.
-    renderedX += (pointerX - renderedX) * 0.08;
-    renderedY += (pointerY - renderedY) * 0.08;
+  const paint = () => {
+    x = lerp(x, targetX, 0.07);
+    y = lerp(y, targetY, 0.07);
 
-    layers.forEach(({ el, speed, axis }) => {
-      const offset = scrollY * speed;
-      el.style.transform = axis === 'x'
-        ? `translate3d(${offset.toFixed(2)}px, 0, 0)`
-        : `translate3d(${(renderedX * speed * 40).toFixed(2)}px, ${offset.toFixed(2)}px, 0)`;
-    });
-
-    tilters.forEach(({ el, strength }) => {
-      const rotateY = renderedX * strength;
-      const rotateX = -renderedY * strength;
+    layers.forEach(({ el, speed, drift }) => {
       el.style.transform =
-        `perspective(1200px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translate3d(${(renderedX * 12).toFixed(2)}px, ${(renderedY * 12).toFixed(2)}px, 0)`;
+        `translate3d(${(x * drift).toFixed(2)}px, ${(scrollY * speed + y * drift * 0.6).toFixed(2)}px, 0)`;
     });
 
-    // Keep easing while the pointer is still settling.
-    if (Math.abs(pointerX - renderedX) > 0.001 || Math.abs(pointerY - renderedY) > 0.001) {
-      onFrame(render);
-      scheduleFrame();
-    }
+    const settled = Math.abs(targetX - x) < 0.05 && Math.abs(targetY - y) < 0.05;
+    if (settled && settling) { stop(); settling = false; }
   };
 
-  const queueRender = () => { onFrame(render); scheduleFrame(); };
+  let stop = () => {};
+  const start = () => {
+    if (settling) return;
+    settling = true;
+    stop = everyFrame(paint);
+  };
 
-  window.addEventListener('scroll', () => { scrollY = window.scrollY; queueRender(); }, { passive: true });
+  window.addEventListener('scroll', () => { scrollY = window.scrollY; nextFrame(paint); }, { passive: true });
 
-  if (isFinePointer.matches) {
+  if (finePointer.matches) {
     window.addEventListener('pointermove', (event) => {
-      pointerX = (event.clientX / window.innerWidth) * 2 - 1;
-      pointerY = (event.clientY / window.innerHeight) * 2 - 1;
-      queueRender();
+      targetX = (event.clientX / window.innerWidth) * 2 - 1;
+      targetY = (event.clientY / window.innerHeight) * 2 - 1;
+      start();
     }, { passive: true });
   }
 
-  queueRender();
+  nextFrame(paint);
+}
+
+/* ==========================================================================
+   Custom cursor
+   ========================================================================== */
+
+function initCursor() {
+  if (!finePointer.matches || reduceMotion.matches) return;
+
+  const cursor = $('[data-cursor]');
+  if (!cursor) return;
+
+  let targetX = window.innerWidth / 2;
+  let targetY = window.innerHeight / 2;
+  let x = targetX;
+  let y = targetY;
+  let stop = () => {};
+  let looping = false;
+
+  const paint = () => {
+    x = lerp(x, targetX, 0.18);
+    y = lerp(y, targetY, 0.18);
+    cursor.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
+
+    if (Math.abs(targetX - x) < 0.1 && Math.abs(targetY - y) < 0.1) {
+      stop();
+      looping = false;
+    }
+  };
+
+  const HOVER_TARGETS = 'a, button, [role="button"], input, textarea, .project, .card';
+
+  window.addEventListener('pointermove', (event) => {
+    targetX = event.clientX;
+    targetY = event.clientY;
+    cursor.classList.add('is-active');
+    cursor.classList.toggle('is-hovering', Boolean(event.target.closest(HOVER_TARGETS)));
+    if (!looping) { looping = true; stop = everyFrame(paint); }
+  }, { passive: true });
+
+  document.addEventListener('pointerleave', () => cursor.classList.remove('is-active'));
+}
+
+/* ==========================================================================
+   Magnetic hover
+   ========================================================================== */
+
+function initMagnetic() {
+  if (!finePointer.matches || reduceMotion.matches) return;
+
+  $$('[data-magnetic]').forEach((el) => {
+    const strength = Number.parseFloat(el.dataset.magnetic) || 0.28;
+
+    const move = (event) => {
+      const rect = el.getBoundingClientRect();
+      const dx = event.clientX - (rect.left + rect.width / 2);
+      const dy = event.clientY - (rect.top + rect.height / 2);
+      el.style.transform = `translate3d(${(dx * strength).toFixed(2)}px, ${(dy * strength).toFixed(2)}px, 0)`;
+    };
+
+    const reset = () => { el.style.transform = ''; };
+
+    el.addEventListener('pointermove', move);
+    el.addEventListener('pointerleave', reset);
+    el.addEventListener('blur', reset);
+  });
+}
+
+/* ==========================================================================
+   Velocity-aware marquee
+   ========================================================================== */
+
+function initMarquee() {
+  const track = $('[data-marquee]');
+  if (!track) return;
+
+  // Duplicate the items so the loop has no visible seam.
+  const originals = Array.from(track.children);
+  track.append(...originals.map((node) => {
+    const clone = node.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    return clone;
+  }));
+
+  if (reduceMotion.matches) return;
+
+  const half = () => track.scrollWidth / 2;
+  let offset = 0;
+  let velocity = 0;
+  let lastY = window.scrollY;
+
+  window.addEventListener('scroll', () => {
+    velocity = clamp((window.scrollY - lastY) * 0.35, -28, 28);
+    lastY = window.scrollY;
+  }, { passive: true });
+
+  const paint = () => {
+    velocity *= 0.92;
+    offset -= 0.45 + velocity;
+
+    const width = half();
+    if (width > 0) {
+      if (offset <= -width) offset += width;
+      if (offset > 0) offset -= width;
+    }
+
+    track.style.transform = `translate3d(${offset.toFixed(2)}px, 0, 0)`;
+  };
+
+  // An always-on rAF loop costs battery for something nobody can see, so the
+  // ticker only runs while it is on screen and the tab is in the foreground.
+  let stop = null;
+  let onScreen = true;
+
+  const sync = () => {
+    const shouldRun = onScreen && !document.hidden;
+    if (shouldRun && !stop) stop = everyFrame(paint);
+    else if (!shouldRun && stop) { stop(); stop = null; }
+  };
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      sync();
+    }).observe(track.parentElement || track);
+  }
+
+  document.addEventListener('visibilitychange', sync);
+  sync();
 }
 
 /* ==========================================================================
@@ -256,41 +478,34 @@ function initTypewriter() {
   if (!host) return;
 
   let roles = [];
-  try {
-    roles = JSON.parse(host.dataset.typewriter);
-  } catch {
-    roles = [];
-  }
+  try { roles = JSON.parse(host.dataset.typewriter); } catch { roles = []; }
   if (!Array.isArray(roles) || !roles.length) return;
 
-  if (prefersReducedMotion.matches) {
+  if (reduceMotion.matches) {
     host.textContent = roles[0];
     return;
   }
 
-  const TYPE_MS = 55;
-  const ERASE_MS = 28;
-  const HOLD_MS = 1900;
+  const TYPE = 52;
+  const ERASE = 26;
+  const HOLD = 2000;
 
   let roleIndex = 0;
-  let charIndex = 0;
+  let chars = 0;
   let erasing = false;
   let timer = 0;
 
   const tick = () => {
     const role = roles[roleIndex];
-    charIndex += erasing ? -1 : 1;
-    host.textContent = role.slice(0, charIndex);
+    chars += erasing ? -1 : 1;
+    host.textContent = role.slice(0, chars);
 
-    let delay = erasing ? ERASE_MS : TYPE_MS;
-
-    if (!erasing && charIndex === role.length) {
-      erasing = true;
-      delay = HOLD_MS;
-    } else if (erasing && charIndex === 0) {
+    let delay = erasing ? ERASE : TYPE;
+    if (!erasing && chars === role.length) { erasing = true; delay = HOLD; }
+    else if (erasing && chars === 0) {
       erasing = false;
       roleIndex = (roleIndex + 1) % roles.length;
-      delay = 320;
+      delay = 300;
     }
 
     timer = window.setTimeout(tick, delay);
@@ -298,19 +513,14 @@ function initTypewriter() {
 
   tick();
 
-  // Stop burning timers while the tab is hidden.
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      window.clearTimeout(timer);
-    } else {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(tick, 400);
-    }
+    window.clearTimeout(timer);
+    if (!document.hidden) timer = window.setTimeout(tick, 400);
   });
 }
 
 /* ==========================================================================
-   Animated counters
+   Counters
    ========================================================================== */
 
 function initCounters() {
@@ -320,54 +530,44 @@ function initCounters() {
   const run = (el) => {
     const target = Number.parseFloat(el.dataset.countTo);
     if (Number.isNaN(target)) return;
-    const suffix = el.dataset.countSuffix || '';
 
-    if (prefersReducedMotion.matches) {
-      el.textContent = `${target}${suffix}`;
-      return;
-    }
+    if (reduceMotion.matches) { el.textContent = String(target); return; }
 
-    const duration = 1400;
+    const duration = 1500;
     const start = performance.now();
 
     const step = (now) => {
-      const progress = clamp((now - start) / duration, 0, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = `${Math.round(target * eased)}${suffix}`;
-      if (progress < 1) requestAnimationFrame(step);
+      const t = clamp((now - start) / duration, 0, 1);
+      el.textContent = String(Math.round(target * (1 - Math.pow(1 - t, 3))));
+      if (t < 1) requestAnimationFrame(step);
     };
 
     requestAnimationFrame(step);
   };
 
-  if (!('IntersectionObserver' in window)) {
-    counters.forEach(run);
-    return;
-  }
+  if (!('IntersectionObserver' in window)) { counters.forEach(run); return; }
 
   const observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        run(entry.target);
-        obs.unobserve(entry.target);
-      });
-    },
-    { threshold: 0.5 }
+    (entries, obs) => entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      run(entry.target);
+      obs.unobserve(entry.target);
+    }),
+    { threshold: 0.6 }
   );
 
   counters.forEach((el) => observer.observe(el));
 }
 
 /* ==========================================================================
-   Pointer spotlight on cards (delegated, fine pointers only)
+   Pointer spotlight on cards
    ========================================================================== */
 
 function initSpotlight() {
-  if (!isFinePointer.matches || prefersReducedMotion.matches) return;
+  if (!finePointer.matches || reduceMotion.matches) return;
 
   document.addEventListener('pointermove', (event) => {
-    const card = event.target.closest('.card, .project, .tl-item__body');
+    const card = event.target.closest('.card');
     if (!card) return;
     const rect = card.getBoundingClientRect();
     card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
@@ -376,7 +576,7 @@ function initSpotlight() {
 }
 
 /* ==========================================================================
-   Project filtering
+   Project filters
    ========================================================================== */
 
 function initFilters() {
@@ -387,17 +587,34 @@ function initFilters() {
   const buttons = $$('[data-filter]', bar);
   const cards = $$('[data-tags]', grid);
   const empty = $('[data-projects-empty]');
+  const timers = new WeakMap();
+
+  // Label each filter with how many projects it holds.
+  buttons.forEach((button) => {
+    const value = button.dataset.filter;
+    const count = value === 'all'
+      ? cards.length
+      : cards.filter((card) => (card.dataset.tags || '').split(/\s+/).includes(value)).length;
+    const slot = $('[data-filter-count]', button);
+    if (slot) slot.textContent = String(count).padStart(2, '0');
+  });
 
   const apply = (value) => {
     let matches = 0;
 
     cards.forEach((card) => {
-      const tags = (card.dataset.tags || '').split(/\s+/).filter(Boolean);
-      const show = value === 'all' || tags.includes(value);
+      const show = value === 'all' || (card.dataset.tags || '').split(/\s+/).includes(value);
       if (show) matches += 1;
+
       card.classList.toggle('is-filtered-out', !show);
-      // Delay display:none so the fade-out can play.
-      window.setTimeout(() => { card.hidden = !show; }, show ? 0 : 200);
+      window.clearTimeout(timers.get(card));
+
+      if (show) {
+        card.hidden = false;
+      } else {
+        // Let the fade finish before the card leaves the grid flow.
+        timers.set(card, window.setTimeout(() => { card.hidden = true; }, reduceMotion.matches ? 0 : 260));
+      }
     });
 
     if (empty) empty.hidden = matches > 0;
@@ -412,7 +629,7 @@ function initFilters() {
 }
 
 /* ==========================================================================
-   Project dialogs (native <dialog> with focus restoration)
+   Project dialogs
    ========================================================================== */
 
 function initDialogs() {
@@ -437,36 +654,17 @@ function initDialogs() {
       return;
     }
 
-    const closer = event.target.closest('[data-dialog-close]');
-    if (closer) {
-      const dialog = closer.closest('dialog');
-      if (dialog) dialog.close();
+    if (event.target.closest('[data-dialog-close]')) {
+      event.target.closest('dialog')?.close();
     }
   });
 
   dialogs.forEach((dialog) => {
-    // Click on the backdrop area (outside the inner panel) closes the dialog.
     dialog.addEventListener('click', (event) => {
+      // Only a click on the backdrop itself dismisses the sheet.
       if (event.target === dialog) dialog.close();
     });
-    dialog.addEventListener('close', () => {
-      document.body.classList.remove('is-locked');
-    });
-  });
-}
-
-/* ==========================================================================
-   Seamless marquee — duplicate the track so the -50% loop has no seam
-   ========================================================================== */
-
-function initMarquee() {
-  $$('[data-marquee]').forEach((track) => {
-    if (prefersReducedMotion.matches) return;
-    track.append(...Array.from(track.children).map((child) => {
-      const clone = child.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true');
-      return clone;
-    }));
+    dialog.addEventListener('close', () => document.body.classList.remove('is-locked'));
   });
 }
 
@@ -478,19 +676,18 @@ function initBackToTop() {
   const button = $('[data-to-top]');
   if (!button) return;
 
-  const update = () => button.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.8);
-  update();
-  window.addEventListener('scroll', () => { onFrame(update); scheduleFrame(); }, { passive: true });
+  onScroll(() => button.classList.toggle('is-visible', window.scrollY > window.innerHeight));
 
   button.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' });
+    window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
   });
 }
 
 /* ==========================================================================
-   Contact form — client-side validation, then hand off to the mail client.
-   The site is fully static (GitHub Pages), so there is no server to POST to;
-   composing a pre-filled message is the honest, dependency-free option.
+   Contact form
+   --------------------------------------------------------------------------
+   The site is static (GitHub Pages), so there is no endpoint to POST to:
+   validate here, then hand a fully composed message to the mail client.
    ========================================================================== */
 
 function initContactForm() {
@@ -500,11 +697,9 @@ function initContactForm() {
   const status = $('[data-form-status]', form);
   const recipient = form.dataset.recipient;
 
-  const fieldError = (input) => $(`[data-error-for="${input.id}"]`, form);
-
   const validate = (input) => {
-    const error = fieldError(input);
     const valid = input.checkValidity();
+    const error = $(`[data-error-for="${input.id}"]`, form);
     input.setAttribute('aria-invalid', String(!valid));
     if (error) error.textContent = valid ? '' : input.dataset.errorMessage || 'Campo requerido.';
     return valid;
@@ -520,57 +715,46 @@ function initContactForm() {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const inputs = $$('input[required], textarea[required]', form);
-    const allValid = inputs.map(validate).every(Boolean);
-
-    if (!allValid) {
+    const required = $$('input[required], textarea[required]', form);
+    if (!required.map(validate).every(Boolean)) {
       if (status) status.textContent = '';
-      const firstInvalid = inputs.find((input) => input.getAttribute('aria-invalid') === 'true');
-      firstInvalid?.focus();
+      required.find((input) => input.getAttribute('aria-invalid') === 'true')?.focus();
       return;
     }
 
     const data = new FormData(form);
-    const name = String(data.get('name') || '').trim();
-    const company = String(data.get('company') || '').trim();
-    const message = String(data.get('message') || '').trim();
-    const email = String(data.get('email') || '').trim();
+    const read = (key) => String(data.get(key) || '').trim();
 
-    const subject = `Nuevo contacto desde el portafolio — ${name}`;
-    const body = [
-      `Nombre: ${name}`,
-      `Email: ${email}`,
-      company ? `Empresa / proyecto: ${company}` : null,
-      '',
-      message,
-    ].filter((line) => line !== null).join('\n');
+    const lines = [`Nombre: ${read('name')}`, `Email: ${read('email')}`];
+    if (read('company')) lines.push(`Empresa / proyecto: ${read('company')}`);
+    lines.push('', read('message'));
+    const body = lines.join('\n');
 
-    window.location.href =
-      `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${recipient}`
+      + `?subject=${encodeURIComponent(`Nuevo contacto desde el portafolio — ${read('name')}`)}`
+      + `&body=${encodeURIComponent(body)}`;
 
-    if (status) {
-      status.textContent = 'Abriendo tu cliente de correo con el mensaje listo para enviar…';
-    }
+    if (status) status.textContent = 'Abriendo tu cliente de correo con el mensaje listo para enviar…';
   });
 }
 
 /* ==========================================================================
-   Copy-to-clipboard affordances
+   Copy to clipboard
    ========================================================================== */
 
-function initCopyButtons() {
+function initCopy() {
   $$('[data-copy]').forEach((button) => {
-    const original = button.dataset.copyLabel || button.textContent.trim();
+    const label = $('[data-copy-label]', button) || button;
+    const original = label.textContent;
 
     button.addEventListener('click', async () => {
-      const value = button.dataset.copy;
       try {
-        await navigator.clipboard.writeText(value);
-        button.textContent = '¡Copiado!';
+        await navigator.clipboard.writeText(button.dataset.copy);
+        label.textContent = 'Copiado';
       } catch {
-        button.textContent = value;
+        label.textContent = button.dataset.copy;
       }
-      window.setTimeout(() => { button.textContent = original; }, 1800);
+      window.setTimeout(() => { label.textContent = original; }, 1800);
     });
   });
 }
@@ -590,26 +774,26 @@ function initYear() {
 
 function boot() {
   [
+    initIntro,
+    initSplitText,
+    initReveal,
     initNavigation,
     initScrollProgress,
-    initReveal,
     initParallax,
+    initCursor,
+    initMagnetic,
+    initMarquee,
     initTypewriter,
     initCounters,
     initSpotlight,
     initFilters,
     initDialogs,
-    initMarquee,
     initBackToTop,
     initContactForm,
-    initCopyButtons,
+    initCopy,
     initYear,
   ].forEach((module) => {
-    try {
-      module();
-    } catch (error) {
-      console.error(`[portfolio] ${module.name} failed to initialise`, error);
-    }
+    try { module(); } catch (error) { console.error(`[portfolio] ${module.name}`, error); }
   });
 }
 
