@@ -1,0 +1,118 @@
+/* ==========================================================================
+   Design tokens — single source of truth for the whole site.
+   Cinematic dark theme. Every color, space, radius and motion value used by
+   components resolves to one of these custom properties.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* --- Color primitives ------------------------------------------------- */
+  --c-void:        #05060a;
+  --c-abyss:       #080a11;
+  --c-surface-1:   #0c0f18;
+  --c-surface-2:   #11151f;
+  --c-surface-3:   #171c29;
+
+  --c-cyan:        #22d3ee;
+  --c-cyan-soft:   #67e8f9;
+  --c-violet:      #a78bfa;
+  --c-violet-soft: #c4b5fd;
+  --c-lime:        #4ade80;
+  --c-amber:       #fbbf24;
+  --c-rose:        #fb7185;
+
+  --c-text:        #eef1f7;
+  --c-text-muted:  #a3adc2;
+  --c-text-faint:  #6b7689;
+
+  /* --- Semantic roles --------------------------------------------------- */
+  --bg-page:       var(--c-void);
+  --bg-elevated:   var(--c-surface-1);
+  --bg-raised:     var(--c-surface-2);
+  --bg-overlay:    color-mix(in srgb, var(--c-void) 82%, transparent);
+
+  --fg-default:    var(--c-text);
+  --fg-muted:      var(--c-text-muted);
+  --fg-faint:      var(--c-text-faint);
+  --fg-accent:     var(--c-cyan);
+
+  --border-subtle: color-mix(in srgb, var(--c-text) 8%, transparent);
+  --border-strong: color-mix(in srgb, var(--c-text) 16%, transparent);
+  --border-accent: color-mix(in srgb, var(--c-cyan) 42%, transparent);
+
+  --glow-cyan:     color-mix(in srgb, var(--c-cyan) 34%, transparent);
+  --glow-violet:   color-mix(in srgb, var(--c-violet) 30%, transparent);
+
+  --gradient-brand: linear-gradient(115deg, var(--c-cyan) 0%, var(--c-violet) 52%, var(--c-lime) 100%);
+  --gradient-line:  linear-gradient(90deg, transparent, var(--border-accent), transparent);
+  --gradient-sheen: linear-gradient(105deg, transparent 35%, color-mix(in srgb, #fff 14%, transparent) 50%, transparent 65%);
+
+  /* --- Typography ------------------------------------------------------- */
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Fluid type scale — clamp(min, preferred, max) */
+  --fs-xs:   clamp(0.72rem, 0.70rem + 0.10vw, 0.78rem);
+  --fs-sm:   clamp(0.82rem, 0.79rem + 0.15vw, 0.90rem);
+  --fs-base: clamp(0.95rem, 0.91rem + 0.20vw, 1.05rem);
+  --fs-md:   clamp(1.05rem, 0.99rem + 0.30vw, 1.20rem);
+  --fs-lg:   clamp(1.25rem, 1.12rem + 0.65vw, 1.60rem);
+  --fs-xl:   clamp(1.60rem, 1.34rem + 1.30vw, 2.40rem);
+  --fs-2xl:  clamp(2.10rem, 1.60rem + 2.50vw, 3.60rem);
+  --fs-3xl:  clamp(2.40rem, 1.60rem + 4.10vw, 4.75rem);
+
+  --lh-tight: 1.08;
+  --lh-snug: 1.30;
+  --lh-normal: 1.65;
+
+  --tracking-tight: -0.03em;
+  --tracking-wide: 0.02em;
+  --tracking-caps: 0.18em;
+
+  /* --- Spacing (4px base) ----------------------------------------------- */
+  --sp-1: 0.25rem;  --sp-2: 0.5rem;   --sp-3: 0.75rem;  --sp-4: 1rem;
+  --sp-5: 1.5rem;   --sp-6: 2rem;     --sp-7: 2.5rem;   --sp-8: 3rem;
+  --sp-9: 4rem;     --sp-10: 5rem;    --sp-11: 7rem;    --sp-12: 9rem;
+
+  --section-pad: clamp(4rem, 9vw, 8.5rem);
+  --gutter: clamp(1.15rem, 4vw, 2.5rem);
+  --content-max: 1200px;
+  --prose-max: 68ch;
+
+  /* --- Radii & elevation ------------------------------------------------ */
+  --r-sm: 8px;  --r-md: 14px;  --r-lg: 20px;  --r-xl: 28px;  --r-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.6);
+  --shadow-lg: 0 28px 64px -24px rgb(0 0 0 / 0.75);
+  --shadow-glow: 0 0 0 1px var(--border-accent), 0 12px 48px -18px var(--glow-cyan);
+
+  /* --- Motion ------------------------------------------------------------ */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --dur-fast: 160ms;
+  --dur-base: 280ms;
+  --dur-slow: 560ms;
+  --dur-reveal: 900ms;
+
+  /* --- Layering ---------------------------------------------------------- */
+  --z-canvas: 0;
+  --z-content: 1;
+  --z-nav: 60;
+  --z-overlay: 80;
+  --z-cursor: 100;
+}
+
+/* Honour the OS-level motion preference everywhere by neutralising durations. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+    --dur-reveal: 1ms;
+  }
+}
